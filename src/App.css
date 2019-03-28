@@ -1,0 +1,58 @@
+@import '~antd/dist/antd.css';
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+.header-style {
+  width: 120px;
+  height: 31px;
+  background: rgba(152, 202, 14, 0.664);
+  margin: 16px 24px 16px 0;
+  float: left;
+}
+
+.navbar-font-modify {
+  font-size: 30px
+}
+
+.footer-modify {
+  width: 100%;
+  background-color: #1052B1;
+  color: white;
+  text-align: left;
+  height: 100px;
+}
+
+.icon-modifier {
+  font-size: 40px;
+  margin-left: 15px;
+  margin-top: 17px;
+  text-align: left;
+}
+
+.wrapper {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background-color:white;
+  overflow:auto;
+  overflow:initial;
+  min-height: 100%;
+  margin-bottom: -50px;
+}
+
+.push {
+  height: 50px;
+}
+.form-modify {
+  margin-bottom: calc(100vh - 64px);
+  top: 94px;
+}
+
+#button-custom {
+  width: 150px !important;
+  block-size: 30px;
+}

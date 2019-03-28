@@ -1,0 +1,6 @@
+112.78.2.80,1433
+
+dbname : phocbfd3_AmusementPark
+user : phocbfd3_hiep
+
+pass : Hiep@123
