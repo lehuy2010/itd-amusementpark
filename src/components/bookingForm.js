@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import axios from 'axios'
 import QRCode from 'qrcode.react'
+import FormItem from 'antd/lib/form/FormItem';
 /*eslint-disable */
 const { Option } = Select;
 
@@ -36,17 +37,6 @@ class BookForm extends Component {
     
 
     componentDidMount() {
-        // fetch("http://localhost:4000/ticket")
-        // .then(response => response.json())
-        // .then(data => {
-        //     this.setState({
-        //         ticketArray: data
-        //     })
-        //     console.log(data);
-        // })
-        // .catch(error => {
-        //     console.log("GET thất bại", error);
-        // })
         axios.get(`http://localhost:4000/ticket`)
         .then(response => {
             this.setState({
@@ -84,25 +74,6 @@ class BookForm extends Component {
 
     handleSubmit (e) {
         e.preventDefault();
-            // fetch("http://localhost:4000/ticket/submit",{
-            //     method: 'POST',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json',
-            //       },
-            //     body: JSON.stringify({
-            //         params: this.state
-            //     })
-            // })
-            // .then(data => {
-            //     console.log(" ||||||||| giờ gửi data theo lệnh POST |||||||||||||");
-            //     resolve(JSON.stringify(data));
-    
-            // }).catch(error => {
-            //         console.log("có lỗi");
-            //         console.log(error);
-            //         reject(error);
-            // })
             axios.post(`http://localhost:4000/ticket/submit`,{
                      params: this.state
             }).then(res => {
@@ -133,25 +104,32 @@ class BookForm extends Component {
         })
     }
     render() {
+        const {getFieldDecorator} = this.props.form;
         return (
             <Row>
                 <Col span={12} offset={6} className="form-modify">
                     <Form className='textbox-modify'
                     onSubmit = {this.handleSubmit}>
-                        <Form.Item
+                        <FormItem
                             label="Họ tên"
-                            required="true"
                             extra="Bạn nên điền họ và tên của NGƯỜI SẼ NHẬN VÉ"
                         >
+                        {getFieldDecorator('Họ tên', {
+                            rules: [{
+                                required: true, message: 'Vui lòng điền đầy đủ họ và tên',
+                                whitespace: true 
+                                }],
+                        })(
                             <Input
                                 value={this.state.customerName}
                                 name="customerName"
                                 onChange={this.handleChange}
                                 placeholder="Điền đầy đủ họ và tên của bạn" size="large" />
+                        )}
+                            
+                        </FormItem>
 
-                        </Form.Item>
-
-                        <Form.Item
+                        <FormItem
                             label="Số chứng minh nhân dân"
                             required="true"
                             extra="Số chứng minh nhân dân sẽ được dùng để xác thực tại quầy bán vé"
@@ -164,19 +142,27 @@ class BookForm extends Component {
                                 onChange={this.handleChange}
                             />
 
-                        </Form.Item>
+                        </FormItem>
 
-                        <Form.Item
+                        <FormItem
                             label="E-mail"
-                            required="true"
+                            hasFeedback
                             extra="Quý khách vui lòng nhập đúng email để có thể nhận được mã vạch vào cổng"
                         >
+                        {getFieldDecorator('E-mail', {
+                            rules: [{
+                                type: 'email', message: 'Email này không hợp lệ!',
+                            },{
+                                required: true, message: 'Email không được bỏ trống',
+                            }],
+                        })(
                             <Input
                                 value={this.state.customerEmail}
                                 name="customerEmail"
                                 onChange={this.handleChange}
                                 placeholder="e.g: abc@example.com" size="large" />
-                        </Form.Item>
+                        )}
+                        </FormItem>
 
                         <Form.Item
                             label="Số điện thoại"
@@ -240,16 +226,16 @@ class BookForm extends Component {
                             Đặt vé
                       </Button>
                     </Form>
-                    {/* <div>
+                    <div>
                         tên: {this.state.customerName} <br />
                         email: {this.state.customerEmail}<br />
                         sdt: {this.state.phoneInput}<br />
                         cmnd: {this.state.customerID}<br />
                         ngày xài: {this.state.ticketDate.format(dateFormat)}<br />
                         số lượng: {this.state.ticketNumber}<br />
-                        loại vé ĐƯỢC CHỌN: {this.state.ticketType} <br />
+                        loại vé ĐƯỢC CHỌN: {this.state.ticketType}
                         
-                    </div> */}
+                    </div>
                     {this.state.ticketQR.map((QRString, index) => {
                         return (
                             
@@ -270,5 +256,5 @@ class BookForm extends Component {
     }
 
 }
-
-export default BookForm 
+const WrappedBookForm = Form.create()(BookForm);
+export default WrappedBookForm
