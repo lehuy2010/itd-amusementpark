@@ -1,7 +1,10 @@
 var db = require ('../fn/mssql-db')
 var moment = require('moment')
 console.log("đây là vị trí file REPO ");
-exports.xoa_dau = (str) => {
+//var md5 = require('md5')
+var md5 = require('crypto-js/md5')
+
+function xoadau (str) {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
     str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -31,11 +34,11 @@ exports.findPrice = params => {
 }
 
 
-exports.transactionInsert = (ticketType, ticketAmount) => { 
+exports.transactionInsert = (ticketType, ticketAmount, phoneInput) => { 
     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss")
     var totalTicketPrice = ticketAmount * ticketType
-    var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice) values
-    ('${1}','${totalTicketPrice}','${currentTime}','${totalTicketPrice}')`
+    var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice, Phone) values
+    ('${1}','${totalTicketPrice}','${currentTime}','${totalTicketPrice}','${phoneInput}')`
     return db.insert(sql);
 }
 exports.getTransactionID = () => {
@@ -48,39 +51,44 @@ exports.getTicketID = TicketType => {
     return db.load(getTicketID_SQL);
 }
 
-exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, StartDate, TicketAmount) => {  // lấy hàng cuối cùng trong bảng Transactions
-    var TicketCodeSample = 'ticket code sample';
-    var CreateDate = moment(StartDate).add(1,"day");
-    var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
-    
-    for(let Ordinal = 1; Ordinal <= TicketAmount; Ordinal ++ )
-    {
-        var ArrayToCreateQR = 
-        [`'${TransIDNumber}'-'${Ordinal}';`]
+exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice,Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
+        var CreateDate = moment(Entity.Date).add(1,"day");
+        var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
+        var TicketCodeArray = [];
+        for(let Ordinal = 1; Ordinal <= Entity.Amount; Ordinal ++ )
+        {
+            var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
+            [`${TransIDNumber}-${Ordinal};${xoadau(Entity.TicketType)};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
 
-        var TransDetailInsert_SQL = 
-        `
-        insert into DetailTransaction 
-        (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
-        values (
-        '${TransIDNumber}', '${Ordinal}', '${TicketCodeSample}','${TicketIDNumber}','${TicketPrice}',
-        '${StartDate}', '${ExpireDate}','${'01'}' )
-        `
-        console.log("==== TEST SQL: " + ArrayToCreateQR);
+            console.log('DÒNG CHƯA CÓ MD5: ' + PseudoArrayToCreateQR + '\n');
         
-        db.insert(TransDetailInsert_SQL);
-    }
-      // đây là object chứa các thuộc tính để gắn lại nhét vào Ticket Code
-    return TransIDNumber
-    
+            var EncodedPseudo = md5(PseudoArrayToCreateQR.toString())      // encode md5 nguyên dãy trên
+
+            console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
+
+            var ArrayToCreateQR = [PseudoArrayToCreateQR+';'+EncodedPseudo]     // xong join 2 chuỗi lại
+            
+            TicketCodeArray.push(ArrayToCreateQR);
+            var TransDetailInsert_SQL = 
+            `
+            insert into DetailTransaction 
+            (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
+            values (
+            '${TransIDNumber}', '${Ordinal}', '${ArrayToCreateQR}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
+            `
+            console.log("==== TEST SQL: " + ArrayToCreateQR + '\n');
+            
+            console.log("++ TEST CÂU INSERT: "+ TransDetailInsert_SQL);
+            db.insert(TransDetailInsert_SQL);
+        }
+        
+        return Promise.resolve(TicketCodeArray)
+
 }
 
 
-exports.getID = e => { 
-     var sql = `select CustomerTypeID, TicketTypeID from Ticket where TicketName = N'${e}'`
-     console.log('câu sql trong hàm getID: ')
-     console.log(sql);
+exports.getTicketCodeForQR = e => { 
+     var sql = `select TicketCode from DetailTransaction where TicketName = N'${e}'`
      return db.load(sql);
 }
-
 

@@ -6,7 +6,8 @@ import {
     InputNumber,
     Button
 } from 'antd';
-
+import axios from 'axios'
+import QRCode from 'qrcode.react'
 /*eslint-disable */
 const { Option } = Select;
 
@@ -22,7 +23,8 @@ class BookForm extends Component {
             ticketArray: [],  // biến này chỉ dùng để bỏ chuỗi loại vé vào rồi render ra màn hình
             ticketType: "",   // dùng để lưu loại vé đang được chọn
             ticketDate: moment(),
-            ticketNumber: 0
+            ticketNumber: 0,
+            ticketQR: []
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleDate = this.handleDate.bind(this)
@@ -34,12 +36,26 @@ class BookForm extends Component {
     
 
     componentDidMount() {
-        fetch("http://localhost:4000/ticket")
-        .then(response => response.json())
-        .then(data => {
+        // fetch("http://localhost:4000/ticket")
+        // .then(response => response.json())
+        // .then(data => {
+        //     this.setState({
+        //         ticketArray: data
+        //     })
+        //     console.log(data);
+        // })
+        // .catch(error => {
+        //     console.log("GET thất bại", error);
+        // })
+        axios.get(`http://localhost:4000/ticket`)
+        .then(response => {
             this.setState({
-                ticketArray: data
+                ticketArray: response.data
             })
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.log("GET thất bại", error);
         })
     }
 
@@ -67,26 +83,36 @@ class BookForm extends Component {
     }
 
     handleSubmit (e) {
-        
-        console.log("kiểm tra lần nữa: " + this.state.ticketType)
-        fetch("http://localhost:4000/ticket/submit",{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-            body: JSON.stringify({
-                params: this.state
+        e.preventDefault();
+            // fetch("http://localhost:4000/ticket/submit",{
+            //     method: 'POST',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json',
+            //       },
+            //     body: JSON.stringify({
+            //         params: this.state
+            //     })
+            // })
+            // .then(data => {
+            //     console.log(" ||||||||| giờ gửi data theo lệnh POST |||||||||||||");
+            //     resolve(JSON.stringify(data));
+    
+            // }).catch(error => {
+            //         console.log("có lỗi");
+            //         console.log(error);
+            //         reject(error);
+            // })
+            axios.post(`http://localhost:4000/ticket/submit`,{
+                     params: this.state
+            }).then(res => {
+                console.log(res);
+                console.log('đây là data: ',res.data);
+                this.setState ({
+                    ticketQR: res.data
+                })
             })
-        })
-        .then(data => {
-            console.log("giờ gửi data theo lệnh POST");
-            console.log(data.json());
-
-        }).catch(error => {
-            console.log("có lỗi");
-            console.log(error);
-        })
+        
     }
 
     handleDate (date) {
@@ -214,20 +240,32 @@ class BookForm extends Component {
                             Đặt vé
                       </Button>
                     </Form>
-                    <div>
+                    {/* <div>
                         tên: {this.state.customerName} <br />
                         email: {this.state.customerEmail}<br />
                         sdt: {this.state.phoneInput}<br />
                         cmnd: {this.state.customerID}<br />
                         ngày xài: {this.state.ticketDate.format(dateFormat)}<br />
                         số lượng: {this.state.ticketNumber}<br />
-                        loại vé ĐƯỢC CHỌN: {this.state.ticketType}
+                        loại vé ĐƯỢC CHỌN: {this.state.ticketType} <br />
                         
-                    </div>
-
+                    </div> */}
+                    {this.state.ticketQR.map((QRString, index) => {
+                        return (
+                            
+                            <QRCode
+                            key = {index}
+                            value = {JSON.stringify(QRString)} 
+                            size = {256}
+                            style = {{marginBottom: 20, marginRight: 50, marginTop: 200}}
+                            />
+                        )
+                    })}
+                    
                 </Col>
-
+                
             </Row>
+            
         )
     }
 

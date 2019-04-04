@@ -13,6 +13,8 @@ router.get('/', (req,res) => {
 })
 
 router.post('/submit', (req,res) => {
+    console.log("cái này là body.param: ")
+    console.log(req.body.params)
     info = {
         Name: req.body.params.customerName,
         Email:  req.body.params.customerEmail,
@@ -22,30 +24,12 @@ router.post('/submit', (req,res) => {
         Amount:  req.body.params.ticketNumber,
         TicketType: req.body.params.ticketType,
     }
-    console.log("vào trong api POST ");
-    // ticketRepo.findPrice(info)     // đầu tiên tìm giá của loại vé đó 
-    // .then(rows => {
-    //     var GiaVe = rows[0].Price;
-    //     var SoLuongVe = info.Amount
-    //     ticketRepo.transactionInsert(GiaVe, SoLuongVe)   //insert vào bảng Transactions
-    //     .then(rows1 => {
-    //         ticketRepo.getID(info.TicketType)
-    //         .then(result => {
-    //             console.log("customerid và ticketid :  ");
-    //             console.log(result[0].CustomerTypeID + ' VÀ ' + result[0].TicketTypeID) 
-                  
-    //         })
-    //     })
-    // }).catch(err => {
-    //     console.log(err);
-    //     res.statusCode = 500;
-    // })
-    
+ 
     ticketRepo.findPrice(info)
         .then(priceResult => {
             var GiaVe = priceResult[0].Price;
             var SoLuongVe = info.Amount
-            ticketRepo.transactionInsert(GiaVe, SoLuongVe)   //insert vào bảng Transactions
+            ticketRepo.transactionInsert(GiaVe, SoLuongVe, info.Phone)   //insert vào bảng Transactions
             .then(() => {
 
                 ticketRepo.getTransactionID().then(id => {
@@ -58,15 +42,31 @@ router.post('/submit', (req,res) => {
                         console.log("Đây là giá vé đó: " + TicketPrice);
                         
                         ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
-                            info.Date, info.Amount)
+                            info)
                             .then (pseudoresult => {
-                                console.log("return giả" + pseudoresult);
+                               // return JSON.stringify(pseudoresult)
+                               console.log('chuỗi ticketcodearray:');
+                               console.log(JSON.stringify(pseudoresult))
+                                res.json(pseudoresult) 
                             })
+                            .catch(err => {
+                                console.log(err);
+                                res.statusCode = 500;
+                                res.end('View error log on console.');
+                            });
                         
                     })
+
                 })
+
             })
+
         })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on console.');
+        });
         
 })
 module.exports = router;
