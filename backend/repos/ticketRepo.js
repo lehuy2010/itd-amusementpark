@@ -3,7 +3,11 @@ var moment = require('moment')
 console.log("đây là vị trí file REPO ");
 //var md5 = require('md5')
 var md5 = require('crypto-js/md5')
-
+function ModifyTicketCode (string) {
+    var modify = xoadau(string)
+    var newstring = modify.split(";")
+    console.log("chuỗi mới: "+ newstring[newstring.length - 1].concat(';',newstring[0]))
+}
 function xoadau (str) {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -51,38 +55,41 @@ exports.getTicketID = TicketType => {
     return db.load(getTicketID_SQL);
 }
 
-exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice,Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
-        var CreateDate = moment(Entity.Date).add(1,"day");
-        var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
-        var TicketCodeArray = [];
-        for(let Ordinal = 1; Ordinal <= Entity.Amount; Ordinal ++ )
-        {
-            var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
-            [`${TransIDNumber}-${Ordinal};${xoadau(Entity.TicketType)};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
+exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
+    var XoaDauString = xoadau(Entity.TicketType)
+    var TachString = XoaDauString.split(";")
+    var NewTicketType = TachString[1].concat(';',TachString[0]);
+    var CreateDate = moment(Entity.Date).add(1, "day");
+    var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
+    var TicketCodeArray = [];
 
-            console.log('DÒNG CHƯA CÓ MD5: ' + PseudoArrayToCreateQR + '\n');
-        
-            var EncodedPseudo = md5(PseudoArrayToCreateQR.toString())      // encode md5 nguyên dãy trên
+    for (let Ordinal = 1; Ordinal <= Entity.Amount; Ordinal++) {
+        var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
+            [`${TransIDNumber}-${Ordinal};${NewTicketType};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
 
-            console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
+        console.log('DÒNG CHƯA CÓ MD5: ' + PseudoArrayToCreateQR + '\n');
 
-            var ArrayToCreateQR = [PseudoArrayToCreateQR+';'+EncodedPseudo]     // xong join 2 chuỗi lại
-            
-            TicketCodeArray.push(ArrayToCreateQR);
-            var TransDetailInsert_SQL = 
+        var EncodedPseudo = md5(PseudoArrayToCreateQR.toString())      // encode md5 nguyên dãy trên
+
+        console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
+
+        var ArrayToCreateQR = [PseudoArrayToCreateQR + ';' + EncodedPseudo]     // xong join 2 chuỗi lại
+
+        TicketCodeArray.push(ArrayToCreateQR);
+        var TransDetailInsert_SQL =
             `
-            insert into DetailTransaction 
-            (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
-            values (
-            '${TransIDNumber}', '${Ordinal}', '${ArrayToCreateQR}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
-            `
-            console.log("==== TEST SQL: " + ArrayToCreateQR + '\n');
-            
-            console.log("++ TEST CÂU INSERT: "+ TransDetailInsert_SQL);
-            db.insert(TransDetailInsert_SQL);
-        }
-        
-        return Promise.resolve(TicketCodeArray)
+                insert into DetailTransaction 
+                (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
+                values (
+                '${TransIDNumber}', '${Ordinal}', '${ArrayToCreateQR}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
+                `
+        console.log("==== TEST SQL: " + ArrayToCreateQR + '\n');
+
+        console.log("++ TEST CÂU INSERT: " + TransDetailInsert_SQL);
+        db.insert(TransDetailInsert_SQL);
+    }
+
+    return Promise.resolve(TicketCodeArray)
 
 }
 
