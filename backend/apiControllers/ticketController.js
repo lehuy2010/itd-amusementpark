@@ -13,8 +13,6 @@ router.get('/', (req,res) => {
 })
 
 router.post('/submit', (req,res) => {
-    console.log("cái này là body.param: ")
-    console.log(req.body.params)
     info = {
         Name: req.body.params.customerName,
         Email:  req.body.params.customerEmail,
@@ -38,15 +36,11 @@ router.post('/submit', (req,res) => {
                     ticketRepo.getTicketID(info.TicketType).then(result => {
                         var TicketIDNumber = result[0].TicketID
                         var TicketPrice = result[0].Price
-                        console.log("Đây là TicketID: " + TicketIDNumber);
-                        console.log("Đây là giá vé đó: " + TicketPrice);
+                        
                         
                         ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
                             info)
                             .then (pseudoresult => {
-                               // return JSON.stringify(pseudoresult)
-                               console.log('chuỗi ticketcodearray:');
-                               console.log(JSON.stringify(pseudoresult))
                                 res.json(pseudoresult) 
                             })
                             .catch(err => {

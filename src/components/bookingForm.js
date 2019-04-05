@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import axios from 'axios'
 import QRCode from 'qrcode.react'
-import FormItem from 'antd/lib/form/FormItem';
+
 /*eslint-disable */
 const { Option } = Select;
 
@@ -32,6 +32,7 @@ class BookForm extends Component {
         this.handleNumberChange = this.handleNumberChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleSelect = this.handleSelect.bind(this)
+        this.disableDate = this.disableDate.bind(this)
     }
 
     
@@ -39,10 +40,12 @@ class BookForm extends Component {
     componentDidMount() {
         axios.get(`http://localhost:4000/ticket`)
         .then(response => {
+            // this.setState({
+            //     ticketArray: response.data
+            // })
             this.setState({
                 ticketArray: response.data
             })
-            console.log(response.data);
         })
         .catch(error => {
             console.log("GET thất bại", error);
@@ -57,9 +60,12 @@ class BookForm extends Component {
         //     [name]: value.format()
         // })
         // :
-        this.setState ({
+        // this.setState ({
+        //     [name]: value
+        // }) 
+        this.setState({
             [name]: value
-        }) 
+        })
     }
 
   
@@ -87,15 +93,22 @@ class BookForm extends Component {
     }
 
     handleDate (date) {
-        console.log("này là value1: " + date);
-        console.log(date)
+        // console.log("này là value1: " + date);
+        // console.log(date)
         let newDate = date
-        let formattedDate = this.state.ticketDate
-        console.log(formattedDate)
+        // let formattedDate = this.state.ticketDate
+        // console.log(formattedDate)
         this.setState({
             ticketDate: newDate
         })
     }
+
+    disableDate(current) {
+        let today = '05-04-2019'
+        return current && current < moment(today, dateFormat);
+    }
+       
+
 
     handleSelect (value) {
         console.log("giá trị trong mục loại vé :  "+  value)
@@ -103,6 +116,7 @@ class BookForm extends Component {
             ticketType: value
         })
     }
+
     render() {
         const {getFieldDecorator} = this.props.form;
         return (
@@ -110,89 +124,129 @@ class BookForm extends Component {
                 <Col span={12} offset={6} className="form-modify">
                     <Form className='textbox-modify'
                     onSubmit = {this.handleSubmit}>
-                        <FormItem
+                        <Form.Item
                             label="Họ tên"
                             extra="Bạn nên điền họ và tên của NGƯỜI SẼ NHẬN VÉ"
+                            hasFeedback
                         >
                         {getFieldDecorator('Họ tên', {
                             rules: [{
+                                initialValue: this.state.customerName,
                                 required: true, message: 'Vui lòng điền đầy đủ họ và tên',
                                 whitespace: true 
                                 }],
                         })(
                             <Input
-                                value={this.state.customerName}
                                 name="customerName"
                                 onChange={this.handleChange}
                                 placeholder="Điền đầy đủ họ và tên của bạn" size="large" />
                         )}
-                            
-                        </FormItem>
+                        </Form.Item>
 
-                        <FormItem
+                        <Form.Item
                             label="Số chứng minh nhân dân"
-                            required="true"
                             extra="Số chứng minh nhân dân sẽ được dùng để xác thực tại quầy bán vé"
+                            hasFeedback
                         >
+                        {getFieldDecorator('Số chứng minh nhân dân', {
+                            rules: [{
+                                initialValue: this.state.customerID,
+                                type: "string",
+                                max: 12, message: 'Số chứng minh nhân dân chỉ tối đa 12 kí tự ' },
+                                {
+                                    pattern: new RegExp("^[0-9]*$"),
+                                    message: <div>Không đúng định dạng !</div>
+                                },
+                                {
+                                required: true, message: 'Vui lòng điền đầy đủ số chứng minh nhân dân',
+                                whitespace: true 
+                                },
+                                {}],
+                        })(
                             <Input
-                                type="number"
-                                min={0}
-                                value={this.state.customerID}
                                 name="customerID"
                                 onChange={this.handleChange}
                             />
+                        )}
+                        </Form.Item>
 
-                        </FormItem>
-
-                        <FormItem
+                        <Form.Item
                             label="E-mail"
                             hasFeedback
                             extra="Quý khách vui lòng nhập đúng email để có thể nhận được mã vạch vào cổng"
                         >
                         {getFieldDecorator('E-mail', {
                             rules: [{
+                                initialValue: this.state.customerEmail,
                                 type: 'email', message: 'Email này không hợp lệ!',
                             },{
                                 required: true, message: 'Email không được bỏ trống',
                             }],
                         })(
                             <Input
-                                value={this.state.customerEmail}
                                 name="customerEmail"
                                 onChange={this.handleChange}
                                 placeholder="e.g: abc@example.com" size="large" />
                         )}
-                        </FormItem>
+                        </Form.Item>
 
                         <Form.Item
                             label="Số điện thoại"
-                            required="true"
+                            hasFeedback
                         >
+                        {getFieldDecorator('Số điện thoại', {
+                            rules: [{
+                                initialValue: this.state.phoneInput,
+                                type: "string",
+                                max: 11, message: 'Số điện thoại chỉ tối đa 11 kí tự ' },
+                                {
+                                    pattern: new RegExp("^[0-9]*$"),
+                                    message: <div>Không đúng định dạng !</div>
+                                },
+                                {
+                                required: true, message: 'Vui lòng điền đúng số điện thoại',
+                                whitespace: true 
+                                },
+                                ],
+                        })(
                             <Input
-                                type="number"
                                 placeholder="+84"
-                                value={this.state.phoneInput}
                                 onChange={this.handleChange}
                                 name="phoneInput"
                             />
+                            )}
                         </Form.Item>
 
                         <Form.Item
                             label="Ngày tham quan"
-                            required="true"
                         >
+                        {getFieldDecorator('Ngày tham quan', {
+                            rules: [{
+                                initialValue : this.state.ticketDate,
+                                type: 'object', required: true, message: 'Please select time!'
+                                }],
+                        })(
                             <DatePicker
                                 name="ticketDate"
-                                value={this.state.ticketDate}
                                 onChange={date => this.handleDate(date)}
                                 format={dateFormat}
+                                disabledDate = {this.disableDate}
                             />
+                        )}
                         </Form.Item>
-
+                        
+                        <Form.Item
+                        label = "Mua vé"
+                        >
+                        {getFieldDecorator('Mua vé', {
+                            rules: [{
+                                required: true, message: 'Please select time!'
+                                }],
+                        })(
                         <Select 
-                        defaultValue="- Hãy chọn loại vé -" 
                         style={{ width: 250 }}
                         name = "ticketType"
+                        placeholder ="- Hãy chọn loại vé -" 
                         onChange = {this.handleSelect}>
                             {
                                 this.state.ticketArray.map((content, index) => {
@@ -201,15 +255,14 @@ class BookForm extends Component {
                                             value={content.TicketName}
                                             key={index}>
                                             {content.TicketName}
-
                                         </Option>
                                     )
                                 })}
                         </Select>
-
+                        )}
+                        </Form.Item>
                         <InputNumber
-
-                            min={0}
+                            min={1}
                             max={10}
                             defaultValue={0}
                             name="ticketNumber"
@@ -231,9 +284,10 @@ class BookForm extends Component {
                         email: {this.state.customerEmail}<br />
                         sdt: {this.state.phoneInput}<br />
                         cmnd: {this.state.customerID}<br />
-                        ngày xài: {this.state.ticketDate.format(dateFormat)}<br />
+                     
                         số lượng: {this.state.ticketNumber}<br />
                         loại vé ĐƯỢC CHỌN: {this.state.ticketType}
+                        
                         
                     </div>
                     {this.state.ticketQR.map((QRString, index) => {

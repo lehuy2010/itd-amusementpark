@@ -69,7 +69,7 @@ exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, E
 
         console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
 
-        var ArrayToCreateQR = [PseudoArrayToCreateQR + ';' + EncodedPseudo+';']     // xong join 2 chuỗi lại
+        var ArrayToCreateQR = [PseudoArrayToCreateQR + ';' + EncodedPseudo + ';']     // xong join 2 chuỗi lại
 
         TicketCodeArray.push(ArrayToCreateQR);
         var TransDetailInsert_SQL =
