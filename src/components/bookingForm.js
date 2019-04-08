@@ -80,7 +80,9 @@ class BookForm extends Component {
 
     handleSubmit (e) {
         e.preventDefault();
-            axios.post(`http://localhost:4000/ticket/submit`,{
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err){
+                axios.post(`http://localhost:4000/ticket/submit`,{
                      params: this.state
             }).then(res => {
                 console.log(res);
@@ -89,6 +91,17 @@ class BookForm extends Component {
                     ticketQR: res.data
                 })
             })
+            }
+        })
+            // axios.post(`http://localhost:4000/ticket/submit`,{
+            //          params: this.state
+            // }).then(res => {
+            //     console.log(res);
+            //     console.log('đây là data: ',res.data);
+            //     this.setState ({
+            //         ticketQR: res.data
+            //     })
+            // })
         
     }
 
@@ -104,7 +117,7 @@ class BookForm extends Component {
     }
 
     disableDate(current) {
-        let today = '05-04-2019'
+        let today = moment().format(dateFormat);
         return current && current < moment(today, dateFormat);
     }
        
@@ -222,7 +235,7 @@ class BookForm extends Component {
                         >
                         {getFieldDecorator('Ngày tham quan', {
                             rules: [{
-                                initialValue : this.state.ticketDate,
+                                initialValue : this.state.ticketDate.format(dateFormat),
                                 type: 'object', required: true, message: 'Please select time!'
                                 }],
                         })(
@@ -236,9 +249,9 @@ class BookForm extends Component {
                         </Form.Item>
                         
                         <Form.Item
-                        label = "Mua vé"
+                        label = "Loại vé muốn mua - Số lượng"
                         >
-                        {getFieldDecorator('Mua vé', {
+                        {getFieldDecorator('Loại vé muốn mua - Số lượng', {
                             rules: [{
                                 required: true, message: 'Please select time!'
                                 }],
@@ -260,18 +273,19 @@ class BookForm extends Component {
                                 })}
                         </Select>
                         )}
-                        </Form.Item>
-                        <InputNumber
-                            min={1}
+                        
+                            <InputNumber
+                            min={0}
                             max={10}
-                            defaultValue={0}
+                            style = {{marginLeft: 10}}
                             name="ticketNumber"
-                            value={this.state.ticketNumber}
+                            value = {this.state.ticketNumber}
                             onChange={this.handleNumberChange}
                         />
+                        <span className="ant-form-text"> vé</span>
                         <br />
                         <br />
-
+                        </Form.Item>
                         <Button
                             type="primary"
                             htmlType ="submit"  
@@ -284,7 +298,7 @@ class BookForm extends Component {
                         email: {this.state.customerEmail}<br />
                         sdt: {this.state.phoneInput}<br />
                         cmnd: {this.state.customerID}<br />
-                     
+                        
                         số lượng: {this.state.ticketNumber}<br />
                         loại vé ĐƯỢC CHỌN: {this.state.ticketType}
                         
