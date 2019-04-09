@@ -3,15 +3,16 @@ import moment from 'moment';
 import '../App.css';
 import {
     Form, Input, Col,  Select,DatePicker, Row,
-    InputNumber,
-    Button
+    InputNumber,Button, Icon
 } from 'antd';
 import axios from 'axios'
 import QRCode from 'qrcode.react'
 
 /*eslint-disable */
 const { Option } = Select;
-
+// let ticketTypeId = 0;
+// let ticketAmountId = 0;
+let id = 0;
 const dateFormat = 'DD-MM-YYYY'
 class BookForm extends Component {
     constructor(props) {
@@ -22,10 +23,12 @@ class BookForm extends Component {
             phoneInput: "",
             customerID: "",
             ticketArray: [],  // biến này chỉ dùng để bỏ chuỗi loại vé vào rồi render ra màn hình
-            ticketType: "",   // dùng để lưu loại vé đang được chọn
+            //ticketType: "",   // dùng để lưu loại vé đang được chọn
             ticketDate: moment(),
-            ticketNumber: 0,
-            ticketQR: []
+            //ticketNumber: 0,
+            ticketQR: [],
+            ticketNumber: [],
+            ticketType: [],
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleDate = this.handleDate.bind(this)
@@ -33,6 +36,8 @@ class BookForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleSelect = this.handleSelect.bind(this)
         this.disableDate = this.disableDate.bind(this)
+        this.addTicketField = this.addTicketField.bind(this)
+        this.removeTicketField = this.removeTicketField.bind(this)
     }
 
     
@@ -40,9 +45,6 @@ class BookForm extends Component {
     componentDidMount() {
         axios.get(`http://localhost:4000/ticket`)
         .then(response => {
-            // this.setState({
-            //     ticketArray: response.data
-            // })
             this.setState({
                 ticketArray: response.data
             })
@@ -52,6 +54,32 @@ class BookForm extends Component {
         })
     }
 
+    addTicketField = () => {
+        const { form } = this.props;
+        // can use data-binding to get
+        const keys = form.getFieldValue('keys');
+        const nextKeys = keys.concat(id++);
+        // can use data-binding to set
+        // important! notify form to detect changes
+        form.setFieldsValue({
+          keys: nextKeys,
+        });
+    }
+
+    removeTicketField = (k) => {
+        const { form } = this.props;
+        // can use data-binding to get
+        const keys = form.getFieldValue('keys');
+        // We need at least one passenger
+        if (keys.length === 1) {
+          return;
+        }
+    
+        // can use data-binding to set
+        form.setFieldsValue({
+          keys: keys.filter(key => key !== k),
+        });
+    }
     handleChange (event) {
         const {name, value} = event.target
             // [value.customerID]: value.customerID.replace(/\D/, '')
@@ -78,33 +106,33 @@ class BookForm extends Component {
        
     }
 
-    handleSubmit (e) {
+    handleSubmit(e) {
         e.preventDefault();
+
         this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err){
-                axios.post(`http://localhost:4000/ticket/submit`,{
-                     params: this.state
-            }).then(res => {
-                console.log(res);
-                console.log('đây là data: ',res.data);
-                this.setState ({
-                    ticketQR: res.data
+            if (!err) {
+                this.setState({
+
+                    ticketType: values.ticketField,
+                    ticketNumber: values.ticketFieldAmount
+                }, () => {
+                    console.log("biến values gồm có : ", values);
+                    console.log("state của ticketType: ", this.state.ticketType.toString());
+                    console.log("state của ticketNumber: ", this.state.ticketNumber.toString());
+                    axios.post(`http://localhost:4000/ticket/submit`, {
+                        params: this.state
+                    })
+                        .then(res => {
+                            console.log('đây là biến values: ', values)
+                            console.log('đây là data: ', res.data);
+                            this.setState({
+                                ticketQR: res.data
+                            })
+                        })
                 })
-            })
             }
         })
-            // axios.post(`http://localhost:4000/ticket/submit`,{
-            //          params: this.state
-            // }).then(res => {
-            //     console.log(res);
-            //     console.log('đây là data: ',res.data);
-            //     this.setState ({
-            //         ticketQR: res.data
-            //     })
-            // })
-        
     }
-
     handleDate (date) {
         // console.log("này là value1: " + date);
         // console.log(date)
@@ -131,7 +159,66 @@ class BookForm extends Component {
     }
 
     render() {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldValue} = this.props.form;
+        getFieldDecorator('keys', {initialValue: [] });
+        const keys = getFieldValue('keys');
+        const ticketField = keys.map((k, index) => (
+            <Form.Item 
+                lable={index === 0 ? "Loại vé muốn mua - Số lượng" : ""}
+                require={false}
+                key={k}
+
+            >
+                {getFieldDecorator(`ticketField[${k}]`, {
+                    validateTrigger: ['onBlur'],
+                    rules: [{
+                        required: true,
+                        whitespace: true,
+                        message: "Vui lòng chọn loại vé bạn muốn mua",
+                    }]
+                })(
+                    <Select
+                        style={{ width: 250 }}
+                        name="ticketType"
+                        placeholder="- Hãy chọn loại vé -"
+                        onChange={this.handleSelect}>
+                        {
+                            this.state.ticketArray.map((content, index) => {
+                                return (
+                                    <Option
+                                        value={content.TicketName}
+                                        key={index}>
+                                        {content.TicketName}
+                                    </Option>
+                                )
+                            })}
+                    </Select>
+                )}
+                {getFieldDecorator(`ticketFieldAmount[${k}]`, {
+                    validateTrigger: ['onBlur'],
+                    rules: [{
+                        required: true,
+                        message: "Vui lòng chọn số lượng vé",
+                    }]
+                })(
+                    <InputNumber
+                        min={0}
+                        max={10}
+                        style={{ marginLeft: 10 }}
+                        name="ticketNumber"
+                        onChange={this.handleNumberChange}
+                        key = {k}
+                    />
+                )}
+                {keys.length > 1 ? (
+                    <Icon
+                        className="dynamic-delete-button"
+                        type="minus-circle-o"
+                        onClick={() => this.removeTicketField(k)}
+                    />
+                ) : null}
+            </Form.Item>
+        ))
         return (
             <Row>
                 <Col span={12} offset={6} className="form-modify">
@@ -248,10 +335,10 @@ class BookForm extends Component {
                         )}
                         </Form.Item>
                         
-                        <Form.Item
+                        {/* <Form.Item
                         label = "Loại vé muốn mua - Số lượng"
                         >
-                        {getFieldDecorator('Loại vé muốn mua - Số lượng', {
+                        {getFieldDecorator('Loại vé muốn mua', {
                             rules: [{
                                 required: true, message: 'Please select time!'
                                 }],
@@ -273,25 +360,48 @@ class BookForm extends Component {
                                 })}
                         </Select>
                         )}
-                        
+                        {getFieldDecorator('Số lượng vé', {
+                            rules: [{
+                                required: true
+                                }]
+                            
+                        })(
                             <InputNumber
                             min={0}
                             max={10}
                             style = {{marginLeft: 10}}
                             name="ticketNumber"
-                            value = {this.state.ticketNumber}
                             onChange={this.handleNumberChange}
                         />
+                        )}
+                            
+                        
                         <span className="ant-form-text"> vé</span>
                         <br />
                         <br />
-                        </Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType ="submit"  
+                        
+                        </Form.Item> */}
+                        {ticketField}
+
+                        <Form.Item
+
                         >
-                            Đặt vé
-                      </Button>
+                            <Button
+                                type="dashed"
+                                onClick={this.addTicketField}
+                            >
+                                <Icon type="plus" /> Mua thêm vé
+                            </Button>
+                        </Form.Item>
+                        <Form.Item >
+                            <Button
+                                type="primary"
+                                htmlType ="submit"  
+                            >
+                                Đặt vé
+                            </Button>
+                        </Form.Item>
+                        
                     </Form>
                     <div>
                         tên: {this.state.customerName} <br />
@@ -299,8 +409,8 @@ class BookForm extends Component {
                         sdt: {this.state.phoneInput}<br />
                         cmnd: {this.state.customerID}<br />
                         
-                        số lượng: {this.state.ticketNumber}<br />
-                        loại vé ĐƯỢC CHỌN: {this.state.ticketType}
+                        số lượng: {this.state.ticketNumber.toString()}<br />
+                        loại vé ĐƯỢC CHỌN: {this.state.ticketType.toString()}
                         
                         
                     </div>

@@ -22,7 +22,8 @@ router.post('/submit', (req,res) => {
         Amount:  req.body.params.ticketNumber,
         TicketType: req.body.params.ticketType,
     }
- 
+    console.log('CỤC INFO LÚC NÀY: ', info)
+    
     ticketRepo.findPrice(info)
         .then(priceResult => {
             var GiaVe = priceResult[0].Price;
