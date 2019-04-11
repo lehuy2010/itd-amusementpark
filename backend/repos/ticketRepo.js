@@ -28,8 +28,8 @@ exports.loadType = ()  => {
 }
 
 
-exports.findPrice = params => {
-    var sql  = `select Price from Ticket where TicketName = N'${params.TicketType}'`;
+exports.findPrice = Type => {
+    var sql  = `select Price from Ticket where TicketName = N'${Type}'`;
     return db.load(sql);
 }
 
@@ -51,15 +51,16 @@ exports.getTicketID = TicketType => {
     return db.load(getTicketID_SQL);
 }
 
-exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
-    var XoaDauString = xoadau(Entity.TicketType)
+exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, ArrayType, ArrayAmount, Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
+    //var XoaDauString = xoadau(Entity.TicketType)
+    var XoaDauString = xoadau(ArrayType)
     var TachString = XoaDauString.split(";")
     var NewTicketType = TachString[1].concat(';',TachString[0]);
     var CreateDate = moment(Entity.Date).add(1, "day");
     var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
     var TicketCodeArray = [];
 
-    for (let Ordinal = 1; Ordinal <= Entity.Amount; Ordinal++) {
+    for (let Ordinal = 1; Ordinal <= ArrayAmount; Ordinal++) {
         var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
             [`${TransIDNumber}-${Ordinal};${NewTicketType};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
 
@@ -79,7 +80,7 @@ exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, E
                 values (
                 '${TransIDNumber}', '${Ordinal}', '${ArrayToCreateQR}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
                 `
-        console.log("==== TEST SQL: " + ArrayToCreateQR + '\n');
+        // console.log("==== TEST SQL: " + ArrayToCreateQR + '\n');
 
         console.log("++ TEST CÂU INSERT: " + TransDetailInsert_SQL);
         db.insert(TransDetailInsert_SQL);

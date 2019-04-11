@@ -125,9 +125,9 @@ class BookForm extends Component {
                         .then(res => {
                             console.log('đây là biến values: ', values)
                             console.log('đây là data: ', res.data);
-                            this.setState({
-                                ticketQR: res.data
-                            })
+                            // this.setState({
+                            //     ticketQR: res.data
+                            // })
                         })
                 })
             }
@@ -164,7 +164,7 @@ class BookForm extends Component {
         const keys = getFieldValue('keys');
         const ticketField = keys.map((k, index) => (
             <Form.Item 
-                lable={index === 0 ? "Loại vé muốn mua - Số lượng" : ""}
+                label={index === 0 ? "Loại vé muốn mua - Số lượng" : ""}
                 require={false}
                 key={k}
 
@@ -199,10 +199,11 @@ class BookForm extends Component {
                     rules: [{
                         required: true,
                         message: "Vui lòng chọn số lượng vé",
+                        min: 1, message: "Số lượng vé phải lớn hơn 1"
                     }]
                 })(
                     <InputNumber
-                        min={0}
+                        min={1}
                         max={10}
                         style={{ marginLeft: 10 }}
                         name="ticketNumber"
@@ -233,7 +234,7 @@ class BookForm extends Component {
                             rules: [{
                                 initialValue: this.state.customerName,
                                 required: true, message: 'Vui lòng điền đầy đủ họ và tên',
-                                whitespace: true 
+                                whitespace: true
                                 }],
                         })(
                             <Input

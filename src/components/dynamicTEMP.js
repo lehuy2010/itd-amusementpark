@@ -9,7 +9,8 @@ const FormItem = Form.Item;
 let id = 0;
 
 class DynamicFieldSet extends React.Component {
-  remove = (k) => {
+  
+  remove = (k) => {                                   // HÀM XÓA 1 FIELD
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
@@ -24,7 +25,7 @@ class DynamicFieldSet extends React.Component {
     });
   }
 
-  add = () => {
+  add = () => {                                       // HÀM THÊM 1 FIELD
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
@@ -36,7 +37,7 @@ class DynamicFieldSet extends React.Component {
     });
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = (e) => {                             //HANDLE NÚT SUBMIT
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -75,7 +76,7 @@ class DynamicFieldSet extends React.Component {
         key={k}
       >
         {getFieldDecorator(`names[${k}]`, {
-          validateTrigger: ['onChange', 'onBlur'],
+          validateTrigger: ['onChange', 'onBlur'],   // lựa chọn khi nào sẽ thực hiện validate trường
           rules: [{
             required: true,
             whitespace: true,
@@ -95,15 +96,19 @@ class DynamicFieldSet extends React.Component {
     ));
     return (
       <Form onSubmit={this.handleSubmit}>
+
         {formItems}
-        <Form.Item {...formItemLayoutWithOutLabel}>
-          <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+
+        <Form.Item {...formItemLayoutWithOutLabel}>                           
+          <Button type="dashed" onClick={this.add} style={{ width: '60%' }}> 
             <Icon type="plus" /> Add field
           </Button>
         </Form.Item>
+
         <Form.Item {...formItemLayoutWithOutLabel}>
           <Button type="primary" htmlType="submit">Submit</Button>
         </Form.Item>
+
       </Form>
     );
   }
