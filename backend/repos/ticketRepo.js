@@ -34,11 +34,19 @@ exports.findPrice = Type => {
 }
 
 
-exports.transactionInsert = (ticketType, ticketAmount, phoneInput) => { 
+// exports.transactionInsert = (ticketType, ticketAmount, phoneInput) => { 
+//     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss")
+//     var totalTicketPrice = ticketAmount * ticketType
+//     var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice, Phone) values
+//     ('${1}','${totalTicketPrice}','${currentTime}','${totalTicketPrice}','${phoneInput}')`
+//     return db.insert(sql);
+// }
+// HÀM NÀY CHỈ INSERT MỘT TRANSACTIONID VÀO BẢNG
+// SAU NÀY SẼ XỬ LÝ THÊM PHẦN ƯU ĐÃI => TOTALPRICE LÀ GIÁ ĐÃ ÁP DỤNG ƯU ĐÃI CỦA PRICE
+exports.transactionInsert = (AllTicketsPrice, phoneInput) => { 
     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss")
-    var totalTicketPrice = ticketAmount * ticketType
     var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice, Phone) values
-    ('${1}','${totalTicketPrice}','${currentTime}','${totalTicketPrice}','${phoneInput}')`
+    ('${1}','${AllTicketsPrice}','${currentTime}','${AllTicketsPrice}','${phoneInput}')`
     return db.insert(sql);
 }
 exports.getTransactionID = () => {
@@ -51,43 +59,39 @@ exports.getTicketID = TicketType => {
     return db.load(getTicketID_SQL);
 }
 
-exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, ArrayType, ArrayAmount, Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
+exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, Ordinal,TicketType, Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
     //var XoaDauString = xoadau(Entity.TicketType)
-    var XoaDauString = xoadau(ArrayType)
+    var XoaDauString = xoadau(TicketType)
     var TachString = XoaDauString.split(";")
     var NewTicketType = TachString[1].concat(';',TachString[0]);
     var CreateDate = moment(Entity.Date).add(1, "day");
     var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
-    var TicketCodeArray = [];
+    var TicketCodeArray;
 
-    for (let Ordinal = 1; Ordinal <= ArrayAmount; Ordinal++) {
-        var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
-            [`${TransIDNumber}-${Ordinal};${NewTicketType};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
+    var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
+        [`${TransIDNumber}-${Ordinal};${NewTicketType};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
 
-        console.log('DÒNG CHƯA CÓ MD5: ' + PseudoArrayToCreateQR + '\n');
+    console.log('DÒNG CHƯA CÓ MD5: ' + PseudoArrayToCreateQR + '\n');
 
-        var EncodedPseudo = md5(PseudoArrayToCreateQR.toString())      // encode md5 nguyên dãy trên
+    var EncodedPseudo = md5(PseudoArrayToCreateQR.toString())      // encode md5 nguyên dãy trên
 
-        console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
+    console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
 
-        var ArrayToCreateQR = [PseudoArrayToCreateQR + ';' + EncodedPseudo + ';']     // xong join 2 chuỗi lại
-
-        TicketCodeArray.push(ArrayToCreateQR);
-        var TransDetailInsert_SQL =
+    TicketCodeArray = [PseudoArrayToCreateQR + ';' + EncodedPseudo + ';'];    // xong join 2 chuỗi lại
+    
+    var TransDetailInsert_SQL =
+        `
+            insert into DetailTransaction 
+            (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
+            values (
+            '${TransIDNumber}', '${Ordinal}', '${TicketCodeArray}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
             `
-                insert into DetailTransaction 
-                (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
-                values (
-                '${TransIDNumber}', '${Ordinal}', '${ArrayToCreateQR}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
-                `
-        // console.log("==== TEST SQL: " + ArrayToCreateQR + '\n');
 
-        console.log("++ TEST CÂU INSERT: " + TransDetailInsert_SQL);
-        db.insert(TransDetailInsert_SQL);
-    }
+    console.log("++ TEST CÂU INSERT: " + TransDetailInsert_SQL);
+    db.insert(TransDetailInsert_SQL);
 
-    return Promise.resolve(TicketCodeArray)
-
+    //return Promise.resolve(TicketCodeArray)
+    return TicketCodeArray
 }
 
 

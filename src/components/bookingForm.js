@@ -125,9 +125,9 @@ class BookForm extends Component {
                         .then(res => {
                             console.log('đây là biến values: ', values)
                             console.log('đây là data: ', res.data);
-                            // this.setState({
-                            //     ticketQR: res.data
-                            // })
+                            this.setState({
+                                ticketQR: res.data
+                            })
                         })
                 })
             }

@@ -22,100 +22,52 @@ router.post('/submit', async (req,res) => {
         Amount:  req.body.params.ticketNumber,
         TicketType: req.body.params.ticketType,
     }
-    var AllTicketCodeArray = [];
-    var TongTienFields = 0;
+    var TicketCodeArray = [];
+    var DetailTransactionsOrdinal = 0; // Số Ordinal cho bảng DetailTransaction
+    var TongTienAllFields = 0;
     console.log('CỤC INFO LÚC NÀY: ', info)
     for( let i = 0; i < info.Amount.length; i++ )
     {
-        const priceResult = await ticketRepo.findPrice(info.TicketType[i])
+        const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
         console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
         console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
-        var GiaVe = priceResult[0].Price;
+        var GiaVe = priceTransResult[0].Price;
         var SoLuongVe = info.Amount[i]
-        console.log("biến GiaVe - SoLuongVe: ", priceResult[0].Price + ' - ' + info.Amount[i])
-        TongTienFields += GiaVe * SoLuongVe;
+        console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+        TongTienAllFields += GiaVe * SoLuongVe;
     }
-    console.log('mảng chứa tiền tổng cộng của các hạng mục vé - số lượng:', TongTienFields);
-       for ( let j = 0; j < parseInt(info.Amount[i]); j++ )
+    console.log('mảng chứa tiền tổng cộng của các hạng mục vé - số lượng:', TongTienAllFields);
+    await ticketRepo.transactionInsert(TongTienAllFields, info.Phone)   //insert vào bảng Transactions
+    
+    for (let i = 0; i < info.Amount.length; i++ )
+    {
+        for ( let j = 0; j < parseInt(info.Amount[i]); j++ )
         {
-            
-             
-                await ticketRepo.transactionInsert(GiaVe, SoLuongVe, info.Phone)   //insert vào bảng Transactions
-            //     .then(() => {
-    
-            //         ticketRepo.getTransactionID().then(id => {
-            //             var TransIDNumber = id[0].TransactionID;
-            //             console.log('Biến TransIDNumber: ', TransIDNumber);
-            //             ticketRepo.getTicketID(info.TicketType[i]).then(result => {
-            //                 var TicketIDNumber = result[0].TicketID
-            //                 var TicketPrice = result[0].Price
-            //                 console.log('biến TicketIDNumber và TicketPrice: ', TicketIDNumber + ' - ' + TicketPrice)
-                            
-            //                 ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
-            //                     info.TicketType[i], info.Amount[i], info)
-            //                     .then (pseudoresult => {
-            //                         //res.json(pseudoresult) 
-            //                         AllTicketCodeArray.push(pseudoresult);
-            //                     })
-            //                     .catch(err => {
-            //                         console.log(err);
-            //                         res.statusCode = 500;
-            //                         res.end('View error log on console.');
-            //                     });
-                            
-            //             })
-    
-            //         })
-    
-            //     })
-    
-            // })
-            // .catch(err => {
-            //     console.log(err);
-            //     res.statusCode = 500;
-            //     res.end('View error log on console.');
-            // });
+            try {
+                const ticketsResult = await ticketRepo.getTicketID(info.TicketType[i])
+                
+                DetailTransactionsOrdinal = await DetailTransactionsOrdinal + 1;
+
+                const transactionResult = await ticketRepo.getTransactionID()
+                var TransIDNumber = transactionResult[0].TransactionID
+                console.log('Số transaction: ', TransIDNumber)
+                var TicketIDNumber = ticketsResult[0].TicketID
+                var TicketPrice = ticketsResult[0].Price
+                console.log('biến TicketIDNumber và TicketPrice: ',TicketIDNumber + ' - ' + TicketPrice)
+                
+                const tempArray = await ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
+                DetailTransactionsOrdinal, info.TicketType[i], info)
+
+                TicketCodeArray.push(tempArray);
+               
+            } catch(err) {
+                console.log(err);
+                res.statusCode = 500;
+                res.end('View error log on console.');
+            }
         }
-    
-   // res.json(AllTicketCodeArray);
-    // findPrice(info)
-    //     .then(priceResult => {
-    //         var GiaVe = priceResult[0].Price;
-    //         var SoLuongVe = info.Amount
-    //         ticketRepo.transactionInsert(GiaVe, SoLuongVe, info.Phone)   //insert vào bảng Transactions
-    //         .then(() => {
-
-    //             ticketRepo.getTransactionID().then(id => {
-    //                 var TransIDNumber = id[0].TransactionID;
-
-    //                 ticketRepo.getTicketID(info.TicketType).then(result => {
-    //                     var TicketIDNumber = result[0].TicketID
-    //                     var TicketPrice = result[0].Price
-                        
-                        
-    //                     ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
-    //                         info)
-    //                         .then (pseudoresult => {
-    //                             res.json(pseudoresult) 
-    //                         })
-    //                         .catch(err => {
-    //                             console.log(err);
-    //                             res.statusCode = 500;
-    //                             res.end('View error log on console.');
-    //                         });
-                        
-    //                 })
-
-    //             })
-
-    //         })
-
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //         res.statusCode = 500;
-    //         res.end('View error log on console.');
-    //     });
+    }
+    res.json(TicketCodeArray);
         
 })
 module.exports = router;
