@@ -1,7 +1,5 @@
 var db = require ('../fn/mssql-db')
 var moment = require('moment')
-console.log("đây là vị trí file REPO ");
-//var md5 = require('md5')
 var md5 = require('crypto-js/md5')
 
 function xoadau (str) {
@@ -22,8 +20,8 @@ function xoadau (str) {
     str = str.replace(/ - /g, ";")
     return str;
 }
-exports.loadType = ()  => {
-    var sql = 'select TicketName from Ticket';
+exports.loadTypeAndPrice = ()  => {
+    var sql = 'select TicketName,Price from Ticket';
     return db.load(sql);
 }
 
@@ -33,14 +31,6 @@ exports.findPrice = Type => {
     return db.load(sql);
 }
 
-
-// exports.transactionInsert = (ticketType, ticketAmount, phoneInput) => { 
-//     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss")
-//     var totalTicketPrice = ticketAmount * ticketType
-//     var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice, Phone) values
-//     ('${1}','${totalTicketPrice}','${currentTime}','${totalTicketPrice}','${phoneInput}')`
-//     return db.insert(sql);
-// }
 // HÀM NÀY CHỈ INSERT MỘT TRANSACTIONID VÀO BẢNG
 // SAU NÀY SẼ XỬ LÝ THÊM PHẦN ƯU ĐÃI => TOTALPRICE LÀ GIÁ ĐÃ ÁP DỤNG ƯU ĐÃI CỦA PRICE
 exports.transactionInsert = (AllTicketsPrice, phoneInput) => { 
@@ -60,7 +50,6 @@ exports.getTicketID = TicketType => {
 }
 
 exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, Ordinal,TicketType, Entity) => {  // lấy hàng cuối cùng trong bảng Transactions
-    //var XoaDauString = xoadau(Entity.TicketType)
     var XoaDauString = xoadau(TicketType)
     var TachString = XoaDauString.split(";")
     var NewTicketType = TachString[1].concat(';',TachString[0]);

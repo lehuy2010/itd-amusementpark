@@ -4,10 +4,20 @@ var moment = require('moment')
 var router = express.Router();
 
 router.get('/', (req,res) => {
-    ticketRepo.loadType().then(rows => {
+    ticketRepo.loadTypeAndPrice().then(rows => {
         res.json(rows);
     }).catch(err => {
         console.log(err) ;
+        res.statusCode = 500;
+    })
+})
+
+
+router.post('/prices',(req,res) => {
+    ticketRepo.findPrice(req.body.type).then(result => {
+        res.json(result);
+    }).catch(err => {
+        console.log(err);
         res.statusCode = 500;
     })
 })
