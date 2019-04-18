@@ -22,6 +22,30 @@ router.post('/prices',(req,res) => {
     })
 })
 
+router.post('/prices/total', async (req, res) => {
+    info = {
+        Name: req.body.params.customerName,
+        Email:  req.body.params.customerEmail,
+        Phone: req.body.params.phoneInput,
+        CMND: req.body.params.customerID,
+        Date: req.body.params.ticketDate,
+        Amount:  req.body.params.ticketNumber,
+        TicketType: req.body.params.ticketType,
+    }
+    var TongTienAllFields = 0;
+    for( let i = 0; i < info.Amount.length; i++ )
+    {
+        const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
+        console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
+        console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
+        var GiaVe = priceTransResult[0].Price;
+        var SoLuongVe = info.Amount[i]
+        console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+        TongTienAllFields += GiaVe * SoLuongVe;
+    }
+    Promise.resolve(TongTienAllFields);
+})
+
 router.post('/submit', async (req,res) => {
     info = {
         Name: req.body.params.customerName,

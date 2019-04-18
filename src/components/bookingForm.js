@@ -96,27 +96,34 @@ class BookForm extends Component {
     
     handleNumberChange (value) {
         console.log("số đổi thành : " + value );
+        if( value === null || value === '')
+        value = 0;
         this.setState ({
             ticketNumber : value
         })
        
     }
 
-    handlePrice (amount) {
+    handlePrice () {
         
         
         console.log('loại vé đã chọn là: ', this.state.ticketType);
         console.log("số vé là : ", this.state.ticketNumber);
-        axios.post(`http://localhost:4000/ticket/prices`,{
-            type: this.state.ticketType
+        // let OldTicketType = this.state.ticketType;
+        // let OldTicketAmount = this.state.ticketNumber;
+        // let sum = 0;
+        // this.setState((prevState, ticketNumber) => {
+        //     ticketNumber: prevState.ticketNumber + ticketNumber
+        // })
+        
+        axios.post(`http://localhost:4000/ticket/prices/total`,{
+            params: this.state
         })
-        .then(priceResult => {
-            console.log('Giá vé tổng cộng là : ' + this.state.ticketNumber + '*' + priceResult.data[0].Price + '='
-            + this.state.ticketNumber*priceResult.data[0].Price);
-           
-        })
-        .catch(error => {
-            console.log("GET thất bại", error);
+        .then (totalSum => {
+            console.log('Tổng cộng tiền vé lúc này: ',totalSum.toLocaleString('vi-vn'))
+
+        }).catch(err => {
+            console.log('Có lỗi: ',err);
         })
         // console.log("Với só lượng: ", amount);
         // console.log("giá của trường đó: ",amount)
