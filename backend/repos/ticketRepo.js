@@ -34,7 +34,7 @@ exports.findPrice = Type => {
 // HÀM NÀY CHỈ INSERT MỘT TRANSACTIONID VÀO BẢNG
 // SAU NÀY SẼ XỬ LÝ THÊM PHẦN ƯU ĐÃI => TOTALPRICE LÀ GIÁ ĐÃ ÁP DỤNG ƯU ĐÃI CỦA PRICE
 exports.transactionInsert = (AllTicketsPrice, phoneInput) => { 
-    var currentTime = moment().format("YYYY-MM-DD HH:mm:ss")
+    var currentTime = moment().format("YYYY-MM-DD HH:mm:ss:SS")
     var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice, Phone) values
     ('${1}','${AllTicketsPrice}','${currentTime}','${AllTicketsPrice}','${phoneInput}')`
     return db.insert(sql);
@@ -54,7 +54,7 @@ exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, O
     var TachString = XoaDauString.split(";")
     var NewTicketType = TachString[1].concat(';',TachString[0]);
     var CreateDate = moment(Entity.Date).add(1, "day");
-    var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss")
+    var ExpireDate = CreateDate.format("YYYY-MM-DD HH:mm:ss:SS")
     var TicketCodeArray;
 
     var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
