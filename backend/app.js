@@ -16,7 +16,6 @@ app.get('/', (req, res) => {
         msg: 'hello from nodejs express api'
         
     })
-    console.log("something from debug ");
 });
 
 

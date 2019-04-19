@@ -14,6 +14,7 @@ router.get('/', (req,res) => {
 
 
 router.post('/prices',(req,res) => {
+    
     ticketRepo.findPrice(req.body.type).then(result => {
         res.json(result);
     }).catch(err => {
@@ -24,17 +25,14 @@ router.post('/prices',(req,res) => {
 
 router.post('/prices/total', async (req, res) => {
     info = {
-        Name: req.body.params.customerName,
-        Email:  req.body.params.customerEmail,
-        Phone: req.body.params.phoneInput,
-        CMND: req.body.params.customerID,
-        Date: req.body.params.ticketDate,
-        Amount:  req.body.params.ticketNumber,
-        TicketType: req.body.params.ticketType,
+        Amount:  req.body.selectedAmount,
+        TicketType: req.body.selectedTickets
     }
     var TongTienAllFields = 0;
+    console.log('CỤC INFO LÚC NÀY: ', info)
     for( let i = 0; i < info.Amount.length; i++ )
     {
+        console.log('vào đây chưa ?');
         const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
         console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
         console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
@@ -43,7 +41,9 @@ router.post('/prices/total', async (req, res) => {
         console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
         TongTienAllFields += GiaVe * SoLuongVe;
     }
-    Promise.resolve(TongTienAllFields);
+    console.log('biến tongtienallfields:',TongTienAllFields);
+    // return Promise.resolve(TongTienAllFields);
+    res.json(TongTienAllFields);
 })
 
 router.post('/submit', async (req,res) => {

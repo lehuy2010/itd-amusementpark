@@ -73,3 +73,10 @@ html, body {
   cursor: not-allowed;
   opacity: 0.5;
 }
+.ticket-price-area {
+  text-align: left;
+  color: #262626;
+  font-size: x-large;
+  margin-top: 10px;
+}
+

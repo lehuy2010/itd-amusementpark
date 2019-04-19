@@ -70,13 +70,17 @@ class BookForm extends Component {
         const keys = form.getFieldValue('keys');
         // We need at least one passenger
         if (keys.length === 1) {
-          return;
+            return;
         }
-    
+        const newkey = keys.filter(key => key !== k)
+        
         // can use data-binding to set
         form.setFieldsValue({
-          keys: keys.filter(key => key !== k),
+            keys: newkey,
+        },() => { 
+            this.handlePrice()      // sau khi xóa trường đó xong gọi hàm này để cập nhật lại giá vé hiện tại
         });
+
     }
 
     handleChange (event) {
@@ -105,28 +109,29 @@ class BookForm extends Component {
     }
 
     handlePrice () {
-        
-        
         console.log('loại vé đã chọn là: ', this.state.ticketType);
         console.log("số vé là : ", this.state.ticketNumber);
-        // let OldTicketType = this.state.ticketType;
-        // let OldTicketAmount = this.state.ticketNumber;
-        // let sum = 0;
-        // this.setState((prevState, ticketNumber) => {
-        //     ticketNumber: prevState.ticketNumber + ticketNumber
-        // })
-        
+
+        var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
+            return index !== null
+        });
+
+        var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
+            return index !== null
+        });
+        // HAI HÀM NÀY DÙNG ĐỂ FILTER RA PHẦN TỬ EMPTY CỦA TRƯỜNG SAU KHI BẤM NÚT XÓA (removeTicketField)
         axios.post(`http://localhost:4000/ticket/prices/total`,{
-            params: this.state
+            selectedTickets: filteredTicketType,
+            selectedAmount: filteredTicketNumber
         })
         .then (totalSum => {
-            console.log('Tổng cộng tiền vé lúc này: ',totalSum.toLocaleString('vi-vn'))
-
+            console.log('Tổng cộng tiền vé lúc này: ',totalSum.data);
+            this.setState({
+                ticketPriceSum: totalSum.data
+            })
         }).catch(err => {
             console.log('Có lỗi: ',err);
         })
-        // console.log("Với só lượng: ", amount);
-        // console.log("giá của trường đó: ",amount)
     }
     
     handleSubmit(e) {
@@ -352,53 +357,7 @@ class BookForm extends Component {
                             />
                         )}
                         </Form.Item>
-                        
-                        {/* <Form.Item
-                        label = "Loại vé muốn mua - Số lượng"
-                        >
-                        {getFieldDecorator('Loại vé muốn mua', {
-                            rules: [{
-                                required: true, message: 'Please select time!'
-                                }],
-                        })(
-                        <Select 
-                        style={{ width: 250 }}
-                        name = "ticketType"
-                        placeholder ="- Hãy chọn loại vé -" 
-                        onChange = {this.handleSelect}>
-                            {
-                                this.state.ticketArray.map((content, index) => {
-                                    return (
-                                        <Option
-                                            value={content.TicketName}
-                                            key={index}>
-                                            {content.TicketName}
-                                        </Option>
-                                    )
-                                })}
-                        </Select>
-                        )}
-                        {getFieldDecorator('Số lượng vé', {
-                            rules: [{
-                                required: true
-                                }]
-                            
-                        })(
-                            <InputNumber
-                            min={0}
-                            max={10}
-                            style = {{marginLeft: 10}}
-                            name="ticketNumber"
-                            onChange={this.handleNumberChange}
-                        />
-                        )}
-                            
-                        
-                        <span className="ant-form-text"> vé</span>
-                        <br />
-                        <br />
-                        
-                        </Form.Item> */}
+  
                         {ticketField}
 
                         <Form.Item
@@ -418,23 +377,18 @@ class BookForm extends Component {
                             >
                                 Đặt vé
                             </Button>
+                            
+                            <div className = 'ticket-price-area' >
+                                Tổng cộng:  
+                                <text style = {{color:'#f5222d', fontSize: 'x-large', marginLeft: '15px'}}>
+                                 {this.state.ticketPriceSum.toLocaleString('vi-vn')} đồng </text>
+                            </div>
                         </Form.Item>
                         
                     </Form>
-                    <div>
-                        tên: {this.state.customerName} <br />
-                        email: {this.state.customerEmail}<br />
-                        sdt: {this.state.phoneInput}<br />
-                        cmnd: {this.state.customerID}<br />
-                        
-                        số lượng: {this.state.ticketNumber.toString()}<br />
-                        loại vé ĐƯỢC CHỌN: {this.state.ticketType.toString()}
-                        
-                        
-                    </div>
+                    
                     {this.state.ticketQR.map((QRString, index) => {
                         return (
-                            
                             <QRCode
                             key = {index}
                             value = {JSON.stringify(QRString)} 
