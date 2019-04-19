@@ -139,9 +139,16 @@ class BookForm extends Component {
 
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
+                    return index !== null
+                });
+        
+                var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
+                    return index !== null
+                });
                 this.setState({
-                    ticketType: values.ticketField,
-                    ticketNumber: values.ticketFieldAmount
+                    ticketType: filteredTicketType,
+                    ticketNumber: filteredTicketNumber
                 }, () => {
                     console.log("biến values gồm có : ", values);
                     console.log("state của ticketType: ", this.state.ticketType.toString());
