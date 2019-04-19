@@ -109,16 +109,18 @@ class BookForm extends Component {
     }
 
     handlePrice () {
-        console.log('loại vé đã chọn là: ', this.state.ticketType);
-        console.log("số vé là : ", this.state.ticketNumber);
+        
 
         var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
-            return index !== null
+            return index !== null && index !== undefined
         });
 
         var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
-            return index !== null
+            return index !== null && index !== undefined
         });
+
+        console.log('loại vé đã chọn là: ', filteredTicketType);
+        console.log("số vé là : ", filteredTicketNumber);
         // HAI HÀM NÀY DÙNG ĐỂ FILTER RA PHẦN TỬ EMPTY CỦA TRƯỜNG SAU KHI BẤM NÚT XÓA (removeTicketField)
         axios.post(`http://localhost:4000/ticket/prices/total`,{
             selectedTickets: filteredTicketType,
