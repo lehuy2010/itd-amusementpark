@@ -83,7 +83,7 @@ class BookForm extends Component {
 
     }
 
-    handleChange (event) {
+    handleChange = (event) => {
         const {name, value} = event.target
         this.setState({
             [name]: value
@@ -169,12 +169,9 @@ class BookForm extends Component {
             }
         })
     }
+
     handleDate (date) {
-        // console.log("này là value1: " + date);
-        // console.log(date)
         let newDate = date
-        // let formattedDate = this.state.ticketDate
-        // console.log(formattedDate)
         this.setState({
             ticketDate: newDate
         })

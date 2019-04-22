@@ -29,19 +29,18 @@ router.post('/prices/total', async (req, res) => {
         TicketType: req.body.selectedTickets
     }
     var TongTienAllFields = 0;
-    console.log('CỤC INFO LÚC NÀY: ', info)
     for( let i = 0; i < info.Amount.length; i++ )
     {
-        console.log('vào đây chưa ?');
+       
         const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
-        console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
-        console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
+        // console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
+        // console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
         var GiaVe = priceTransResult[0].Price;
         var SoLuongVe = info.Amount[i]
-        console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+        // console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
         TongTienAllFields += GiaVe * SoLuongVe;
     }
-    console.log('biến tongtienallfields:',TongTienAllFields);
+    // console.log('biến tongtienallfields:',TongTienAllFields);
     // return Promise.resolve(TongTienAllFields);
     res.json(TongTienAllFields);
 })
@@ -59,15 +58,14 @@ router.post('/submit', async (req,res) => {
     var TicketCodeArray = [];
     var DetailTransactionsOrdinal = 0; // Số Ordinal cho bảng DetailTransaction
     var TongTienAllFields = 0;
-    console.log('CỤC INFO LÚC NÀY: ', info)
     for( let i = 0; i < info.Amount.length; i++ )
     {
         const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
-        console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
-        console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
+        // console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
+        // console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
         var GiaVe = priceTransResult[0].Price;
         var SoLuongVe = info.Amount[i]
-        console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+        // console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
         TongTienAllFields += GiaVe * SoLuongVe;
     }
     console.log('mảng chứa tiền tổng cộng của các hạng mục vé - số lượng:', TongTienAllFields);
@@ -84,10 +82,10 @@ router.post('/submit', async (req,res) => {
 
                 const transactionResult = await ticketRepo.getTransactionID()
                 var TransIDNumber = transactionResult[0].TransactionID
-                console.log('Số transaction: ', TransIDNumber)
+                
                 var TicketIDNumber = ticketsResult[0].TicketID
                 var TicketPrice = ticketsResult[0].Price
-                console.log('biến TicketIDNumber và TicketPrice: ',TicketIDNumber + ' - ' + TicketPrice)
+                
                 
                 const tempArray = await ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
                 DetailTransactionsOrdinal, info.TicketType[i], info)
