@@ -7,7 +7,6 @@ const dbConfig = {
         host: 'localhost',
         database: 'phocbfd3_AmusementPark',
         port: 1433,
-        
 }
 
 exports.load = sql => {
@@ -19,15 +18,11 @@ exports.load = sql => {
                 if (err) {
                     console.log(err);
                     reject(err);
-
                 }
                 else {
-                    // console.log('CHỖ NÀY LÀ BÊN FILE DB');
-                    // console.log(result.recordset);
                     resolve(result.recordset)
                 }
                 connection.close();
-            // .query không cần sử dụng .catch
             });
         }).catch(err => {
             console.log(err);
@@ -47,15 +42,11 @@ exports.insert = sql => {
                  if (err) {
                      console.log(err);
                      reject(err);
- 
                  }
                  else {
-                     // console.log('CHỖ NÀY LÀ BÊN FILE DB');
-                     // console.log(result.recordset);
                      resolve(result.recordset)
                  }
                  connection.close();
-             // .query không cần sử dụng .catch
              });
          }).catch(err => {
              console.log(err);

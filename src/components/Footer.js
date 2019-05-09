@@ -21,9 +21,9 @@ class PageFooter extends Component {
             <Icon type="twitter" className = 'icon-modifier'/>
             <Icon type="youtube" className = 'icon-modifier'/>
             <Icon type="facebook" className = 'icon-modifier'/>
-            <Icon type="instagram"className = 'icon-modifier' />       
+            <Icon type="instagram"className = 'icon-modifier' style = {{marginRight: 30}} />       
 
-            &copy; {new Date().getFullYear()} Copyright: nguyenlehuy1101@gmail.com
+            &copy; {new Date().getFullYear()} Copyright: Huy Lê. All rights reserved
     
             </Footer>
         )

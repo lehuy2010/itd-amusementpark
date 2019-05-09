@@ -1,8 +1,9 @@
 @import '~antd/dist/antd.css';
-
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
 html, body {
   height: 100%;
   margin: 0;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 .header-style {
   width: 120px;
@@ -18,7 +19,7 @@ html, body {
 
 .footer-modify {
   width: 100%;
-  background-color: #1052B1;
+  background-color: #001529;
   color: white;
   text-align: left;
   height: 100px;
@@ -46,6 +47,9 @@ html, body {
 
 .push {
   height: 50px;
+}
+.big-push {
+   height: 270px;
 }
 .form-modify {
   margin-bottom: calc(100vh - 64px);
@@ -80,3 +84,33 @@ html, body {
   margin-top: 10px;
 }
 
+.ant-carousel .slick-slide {
+  height: 768px;  
+  /* background: #ffff; */
+  background: #262626;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.picture {
+  display: block;
+}
+
+/* .content-modify h1 {
+  color: #001529
+} */
+.ant-typography h3{ 
+  color: #595959;
+}
+.ant-typography h1{ 
+  color: #002909;
+  margin-bottom: 2px;
+}
+.introduction-slider {
+  display: block;
+  height: 368px;  
+  /* background: #ffff; */
+  background: #262626;
+  overflow: hidden;
+  width: 469px;
+}

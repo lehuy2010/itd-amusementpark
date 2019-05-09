@@ -3,7 +3,7 @@ import moment from 'moment';
 import '../App.css';
 import {
     Form, Input, Col,  Select,DatePicker, Row,
-    InputNumber,Button, Icon
+    InputNumber,Button, Icon, message
 } from 'antd';
 import axios from 'axios'
 import QRCode from 'qrcode.react'
@@ -50,8 +50,10 @@ class BookForm extends Component {
         .catch(error => {
             console.log("GET thất bại", error);
         })
-    }
 
+        document.title = 'Đặt vé online'
+    }
+    
     addTicketField = () => {
         const { form } = this.props;
         // can use data-binding to get
@@ -110,7 +112,6 @@ class BookForm extends Component {
 
     handlePrice () {
         
-
         var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
             return index !== null && index !== undefined
         });
@@ -119,8 +120,8 @@ class BookForm extends Component {
             return index !== null && index !== undefined
         });
 
-        console.log('loại vé đã chọn là: ', filteredTicketType);
-        console.log("số vé là : ", filteredTicketNumber);
+        // console.log('loại vé đã chọn là: ', filteredTicketType);
+        // console.log("số vé là : ", filteredTicketNumber);
         // HAI HÀM NÀY DÙNG ĐỂ FILTER RA PHẦN TỬ EMPTY CỦA TRƯỜNG SAU KHI BẤM NÚT XÓA (removeTicketField)
         axios.post(`http://localhost:4000/ticket/prices/total`,{
             selectedTickets: filteredTicketType,
@@ -144,7 +145,7 @@ class BookForm extends Component {
                 var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
                     return index !== null
                 });
-        
+
                 var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
                     return index !== null
                 });
@@ -152,20 +153,26 @@ class BookForm extends Component {
                     ticketType: filteredTicketType,
                     ticketNumber: filteredTicketNumber
                 }, () => {
-                    console.log("biến values gồm có : ", values);
-                    console.log("state của ticketType: ", this.state.ticketType.toString());
-                    console.log("state của ticketNumber: ", this.state.ticketNumber.toString());
+                    // console.log("biến values gồm có : ", values);
+                    // console.log("state của ticketType: ", this.state.ticketType.toString());
+                    // console.log("state của ticketNumber: ", this.state.ticketNumber.toString());
                     axios.post(`http://localhost:4000/ticket/submit`, {
                         params: this.state
                     })
                         .then(res => {
-                            console.log('đây là biến values: ', values)
-                            console.log('đây là data: ', res.data);
+                            // console.log('đây là biến values: ', values)
+                            // console.log('đây là data: ', res.data);
                             this.setState({
                                 ticketQR: res.data
                             })
+                            console.log('cục qrcode: ', res.data);
                         })
                 })
+                // axios.post(`http://localhost:4000/ticket/send`, {
+                //     params: this.state
+                // }).then(res => {
+                //     console.log('Email đã được gửi');
+                // })
             }
         })
     }
@@ -385,9 +392,8 @@ class BookForm extends Component {
                             </Button>
                             
                             <div className = 'ticket-price-area' >
-                                Tổng cộng:  
-                                <text style = {{color:'#f5222d', fontSize: 'x-large', marginLeft: '15px'}}>
-                                 {this.state.ticketPriceSum.toLocaleString('vi-vn')} đồng </text>
+                              Tổng cộng: <div style = {{color:'#f5222d', fontSize: 'x-large'}}>
+                                 {this.state.ticketPriceSum.toLocaleString('vi-vn')} đồng </div>
                             </div>
                         </Form.Item>
                         

@@ -2,7 +2,8 @@ var express = require ('express')
 var ticketRepo = require('../repos/ticketRepo')
 var moment = require('moment')
 var router = express.Router();
-
+var nodemailer = require('nodemailer')
+var qrcode = require ('qrcode')
 router.get('/', (req,res) => {
     ticketRepo.loadTypeAndPrice().then(rows => {
         res.json(rows);
@@ -101,5 +102,49 @@ router.post('/submit', async (req,res) => {
     }
     res.json(TicketCodeArray);
         
+})
+
+router.post('/send', async (req,res) => {
+    var tempQRArray = [];
+    var QRLength = req.body.params.ticketQR;
+    for (let i = 0; i < req.body.params.ticketQR.length ; i ++  )
+        {
+            console.log('chuỗi qr code trong vòng lặp là: ', JSON.stringify(req.body.params.ticketQR[i]))
+        }
+    const output = `
+    <p> Đây là mã QRCode cho các vé của khu vui chơi iTD Amusement Park mà bạn đã đặt mua </p>
+    <p> Vui lòng bảo quản các mã QRCode này để đảm bảo tính bảo mật của vé của bạn. Hệ thống sẽ không chịu trách nhiệm về việc thất lạc/mất mát mã QRCode </p>
+    <h3> Các mã QRCode </h3>
+    <script>
+        for (let i = 0; i < ${req.body.params.ticketQR.length} ; i ++  )
+        {   var temp = i;
+            ${JSON.stringify(req.body.params.ticketQR[temp])}
+            <br>
+        }
+    </script>
+    `;
+    let transporter = nodemailer.createTransport({
+        host: "smtp.googlemail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: 'nguyenlehuy1101@gmail.com', // generated ethereal user
+          pass: '19001560' // generated ethereal password
+        }
+      });
+    
+      // send mail with defined transport object
+      let info = await transporter.sendMail({
+        from: '"Huy Nguyễn Lê 👻" <nguyenlehuy1101@gmail.com>', // sender address
+        to: req.body.params.customerEmail, // list of receivers
+        subject: "MÃ QRCODE CHO VÉ KHU VUI CHƠI ITD AMUSEMENT PARK", // Subject line
+        text: "text nguyễn lê huy", // plain text body
+        html: output // html body
+      });
+    
+     console.log("Message sent: %s", info.messageId);
+
+   res.json(info.messageId);
+     
 })
 module.exports = router;

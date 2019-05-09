@@ -35,8 +35,8 @@ exports.findPrice = Type => {
 // SAU NÀY SẼ XỬ LÝ THÊM PHẦN ƯU ĐÃI => TOTALPRICE LÀ GIÁ ĐÃ ÁP DỤNG ƯU ĐÃI CỦA PRICE
 exports.transactionInsert = (AllTicketsPrice, phoneInput) => { 
     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss:SS")
-    var sql = `insert into Transactions(EmployeeID, Price, TransactionDate, TotalPrice, Phone) values
-    ('${1}','${AllTicketsPrice}','${currentTime}','${AllTicketsPrice}','${phoneInput}')`
+    var sql = `insert into Transactions( Price, TransactionDate, TotalPrice, Phone) values
+    ('${AllTicketsPrice}','${currentTime}','${AllTicketsPrice}','${phoneInput}')`
     return db.insert(sql);
 }
 exports.getTransactionID = () => {

@@ -4,7 +4,7 @@ var express = require('express'),
     cors = require('cors');
 
 var ticketCtrl = require('./apiControllers/ticketController');
-
+var homepageCtrl = require('./apiControllers/homepage-contentController');
 
 var app = express();
 app.use(morgan('dev'));
@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/ticket',ticketCtrl);
+app.use('/home',homepageCtrl);
 
 var port = process.env.PORT || 4000;
 app.listen(port, () => {
