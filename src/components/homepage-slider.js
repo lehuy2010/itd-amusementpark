@@ -20,16 +20,22 @@ class Slider extends Component {
           };
         return (
           <Carousel {...settings}
+            style={{
+                height: '768px',
+                background: '#262626',
+                overflow: 'hidden',
+                width: 'fit - content'
+            }}
             autoplay = 'true'
             >
             <div>
-                <img src={require('../image/image2.jpg')} className='picture' alt = 'some text'/>    
+                <img src={require('../image/image2.jpg')} className='picture-home' alt = 'some text'/>    
             </div>
             <div>
-                <img src={require('../image/image1.jpg')} className='picture' alt = 'some text' />    
+                <img src={require('../image/image1.jpg')} className='picture-home' alt = 'some text' />    
             </div>
             <div>
-                <img src={require('../image/image3.jpg')} className='picture' alt = 'some text'/>    
+                <img src={require('../image/image3.jpg')} className='picture-home' alt = 'some text'/>    
             </div>
                 
             </Carousel>

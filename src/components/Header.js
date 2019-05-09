@@ -29,11 +29,11 @@ class PageHeader extends Component {
                         </Menu.Item>
 
                         <Menu.Item key="keyServiceandGame" >
-                            <span>Dịch vụ & trò chơi</span>
+                            <Link to = "/games" > Trò chơi & dịch vụ</Link>
                         </Menu.Item>
 
                         <Menu.Item key="keyContact" >
-                            <span>Liên hệ</span>
+                            <Link to = "/contact" > Liên hệ </Link>
                         </Menu.Item>
 
                         <Menu.Item key="keyPrice" >

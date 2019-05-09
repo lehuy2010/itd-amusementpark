@@ -84,33 +84,20 @@ html, body {
   margin-top: 10px;
 }
 
-.ant-carousel .slick-slide {
-  height: 768px;  
-  /* background: #ffff; */
-  background: #262626;
-  overflow: hidden;
-  width: fit-content;
+
+.picture-introduction {
+  display: block;
+  width: 400px;
+  height: 200px;
 }
 
-.picture {
+.picture-home {
   display: block;
 }
-
-/* .content-modify h1 {
-  color: #001529
-} */
 .ant-typography h3{ 
   color: #595959;
 }
 .ant-typography h1{ 
   color: #002909;
   margin-bottom: 2px;
-}
-.introduction-slider {
-  display: block;
-  height: 368px;  
-  /* background: #ffff; */
-  background: #262626;
-  overflow: hidden;
-  width: 469px;
 }

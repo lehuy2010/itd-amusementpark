@@ -26,10 +26,6 @@ class Content extends Component {
         })
     }
     render () {
-        const gridStyle = {
-            width: '25%',
-            textAlign: 'center',
-          };
         return (
             <div>
                 <Typography align='center'>
@@ -50,13 +46,12 @@ class Content extends Component {
                     <Divider > <h1>Các Hoạt Động Giải Trí</h1> </Divider>
 
                     <div style={{ padding: '10px' }}>
-                        <Row gutter={16} >
+                        <Row gutter={20} >
                             {
                                 this.state.gamesInformation.map((content, index) => {
                                     return (
                                         <GameCard gameType={content.TicketTypeName}
                                             coverImage='ca-chep-nhao-lon.jpg'
-                                            description={content.Description}
                                             key={index}
                                         />
                                     )

@@ -24,8 +24,8 @@ class GameCard extends Component {
             >
             <Meta 
                 title = {this.props.gameType}
-                style = {{marginTop: 30, marginBottom : 20}}
-                description = {this.props.gameType}
+                style = {{marginTop: 30,
+                 marginBottom : 20,}}
             />
             </Card>
         </Col>
