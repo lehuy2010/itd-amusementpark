@@ -89,3 +89,9 @@ exports.getTicketCodeForQR = e => {
      return db.load(sql);
 }
 
+exports.loadPromotion = bookDate => {
+    console.log('biến bookdate sau khi đã tostirng: ', bookDate.toString());
+    var sql = `select * from Promotion where '${bookDate.toString()}' > FromTime and '${bookDate.toString()}' < ToTime`;
+    return db.load(sql)
+}
+

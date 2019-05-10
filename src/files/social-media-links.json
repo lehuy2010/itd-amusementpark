@@ -1,0 +1,22 @@
+{
+    "facebook": 
+        {
+            "link": "https://www.facebook.com/lehuy2010",
+            "type": "facebook"
+        },  
+    "instagram" : 
+        {
+            "link": "https://www.instagram.com/nguyenlehuy1101/",
+            "type": "instagram"
+        },
+    "youtube" : 
+        {
+            "link": "https://www.youtube.com/channel/UCIH-pVX7WBpXp0I0NkwVCCg",
+            "type": "youtube"
+        }, 
+    "twitter" : 
+        {
+            "link": "https://twitter.com/nguyenlehuy1101",
+            "type": "twitter"
+        }     
+}

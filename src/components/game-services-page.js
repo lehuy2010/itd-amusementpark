@@ -1,15 +1,16 @@
 /*eslint-disable */
 import React, { Component } from 'react';
 import '../App.css';
-import {Card, Col, Row, Divider} from 'antd'
+import {Icon, Spin, Row, Divider} from 'antd'
 import axios from 'axios'
-const {Meta} = Card
-
+import GameCard from './game-cards'
+const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 class GamesServices extends Component { 
     constructor(props) {
         super(props)
         this.state = {
-            gamesInformation: []
+            gamesInformation: [],
+            isLoading: true
         }
 
     }
@@ -18,47 +19,40 @@ class GamesServices extends Component {
         axios.get(`http://localhost:4000/home`)
         .then(response => {
             this.setState({ 
-                gamesInformation: response.data
+                gamesInformation: response.data,
+                isLoading: false
             })
         }).catch(err => {
             console.log('thất bại');    
         })
+    document.title = 'Trò chơi & dịch vụ'
     }
 
     render() {
         return (
+             
             <div style={{ padding: '10px' }}>
                 <Divider orientation = "left"
                 style = {{fontSize: '36px'}} >Các trò chơi </Divider>
+                {this.state.isLoading ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                    <Spin
+                        indicator = {loadingIcon}
+                    />
+                </div>  :
                 <Row gutter={16} >
                     {
-                    this.state.gamesInformation.map((content, index) => {
-                        return (
-                            <Col span={6} >
-                                <Card
-                                    hoverable
-                                    style={{
-                                        width: '100%',
-                                        textAlign: 'center',
-                                        marginTop: '16px',
-                                    }}
-                                    cover={<img alt='KidPlaygroup' 
-                                    src={require('../image/ca-chep-nhao-lon.jpg')}
-                                     />}
-                                >
-                                    <Meta
-                                        title={content.TicketTypeName}
-                                        style={{
-                                            marginTop: 30,
-                                            marginBottom: 20,
-                                        }}
-                                    />
-                                </Card>
-                            </Col>
-                        )
-                    })
+                        this.state.gamesInformation.map((content, index) => {
+                            return (
+                                <GameCard gameType={content.TicketTypeName}
+                                    coverImage='ca-chep-nhao-lon.jpg'
+                                    key={index}
+                                />
+                                
+                            )
+                        })
                     }
-                </Row>
+                    
+                </Row>}
             </div>
         )
     }

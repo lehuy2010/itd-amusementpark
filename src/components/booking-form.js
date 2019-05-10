@@ -26,6 +26,7 @@ class BookForm extends Component {
             ticketQR: [],
             ticketNumber: [],   // dùng để lưu số lượng loại vé được chọn vào một chuỗi
             ticketType: [],     // dùng để lưu các loại vé được chọn vào một chuỗi
+            Promotion: [],
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleDate = this.handleDate.bind(this)
@@ -36,6 +37,7 @@ class BookForm extends Component {
         this.addTicketField = this.addTicketField.bind(this)
         this.removeTicketField = this.removeTicketField.bind(this)
         this.handlePrice = this.handlePrice.bind(this)
+        this.handlePromotionContent = this.handlePromotionContent.bind(this)
     }
 
     
@@ -51,6 +53,17 @@ class BookForm extends Component {
             console.log("GET thất bại", error);
         })
 
+        axios.post(`http://localhost:4000/ticket/promotion`,{
+            bookDate: moment()
+        }).then(res => {
+            
+            this.setState ({ 
+                Promotion: res.data
+            })
+        }).catch(err => {
+            console.log(err);
+        })
+        
         document.title = 'Đặt vé online'
     }
     
@@ -153,9 +166,6 @@ class BookForm extends Component {
                     ticketType: filteredTicketType,
                     ticketNumber: filteredTicketNumber
                 }, () => {
-                    // console.log("biến values gồm có : ", values);
-                    // console.log("state của ticketType: ", this.state.ticketType.toString());
-                    // console.log("state của ticketNumber: ", this.state.ticketNumber.toString());
                     axios.post(`http://localhost:4000/ticket/submit`, {
                         params: this.state
                     })
@@ -184,13 +194,18 @@ class BookForm extends Component {
         })
     }
 
+    handlePromotionContent(value) {
+        this.state.Promotion.map((content,index) => {
+            content.PromotionName == value ? console.log(content.Description) : null
+        })
+        
+    }
     disableDate(current) {
         let today = moment().format(dateFormat);
-        return current && current < moment(today, dateFormat);
+        let nextWeek =  moment().add(7,'days').format(dateFormat);
+        return current && (current < moment(today, dateFormat) || current > moment(nextWeek, dateFormat));
     }
-       
-
-
+     
    
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -233,7 +248,7 @@ class BookForm extends Component {
                     rules: [{
                         required: true,
                         message: "Vui lòng chọn số lượng vé",
-                        min: 1, message: "Số lượng vé phải lớn hơn 1"
+                        min: 1, message: "Số lượng vé ít nhất là 1"
                     }]
                 })(
                     <InputNumber
@@ -369,6 +384,31 @@ class BookForm extends Component {
                                 disabledDate = {this.disableDate}
                             />
                         )}
+                        </Form.Item>
+                        <Form.Item>
+                            {getFieldDecorator(`promotionField`, {
+                                validateTrigger: ['onBlur'],
+                                rules: [{
+                                    initialValue: this.state.Promotion
+                                }]
+                            })(
+                                <Select
+                                    style={{ width: 400 }}
+                                    name="Promotion"
+                                    placeholder='chọn đi'
+                                    onChange={this.handlePromotionContent}>
+                                    {
+                                        this.state.Promotion.map((content, index) => {
+                                            return (
+                                                <Option
+                                                    value={content.PromotionName}
+                                                    key={index}>
+                                                    {content.PromotionName}
+                                                </Option>
+                                            )
+                                        })}
+                                </Select>
+                            )}
                         </Form.Item>
   
                         {ticketField}

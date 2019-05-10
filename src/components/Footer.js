@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import '../App.css'
 
-
+import socialMediaData from '../files/social-media-links.json'
 import {
     Layout, Icon
 } 
@@ -13,15 +13,40 @@ const {
 } = Layout;
 
 class PageFooter extends Component {
-    
+    constructor(props) {
+        super(props)
+        this.state = { 
+            iconLink: ''
+        } 
+    }
     render() {
         return (
-            <Footer className = 'footer-modify'>   
+            <Footer className = 'footer-modify'> 
 
-            <Icon type="twitter" className = 'icon-modifier'/>
-            <Icon type="youtube" className = 'icon-modifier'/>
-            <Icon type="facebook" className = 'icon-modifier'/>
-            <Icon type="instagram"className = 'icon-modifier' style = {{marginRight: 30}} />       
+            <a href = {socialMediaData.twitter.link} target="_blank" rel="noopener noreferrer">
+            <Icon type={socialMediaData.twitter.type}
+            className= 'icon-modifier' />
+            </a>
+
+            <a href = {socialMediaData.youtube.link} target="_blank" rel="noopener noreferrer">
+            <Icon type={socialMediaData.youtube.type}
+            className = 'icon-modifier'
+            />
+            </a> 
+
+            <a href = {socialMediaData.facebook.link} target="_blank" rel="noopener noreferrer">
+            <Icon type={socialMediaData.facebook.type}
+            className = 'icon-modifier'
+            />
+            </a> 
+
+            <a href = {socialMediaData.instagram.link} target="_blank" rel="noopener noreferrer">
+            <Icon type={socialMediaData.instagram.type}
+            className = 'icon-modifier'
+            style = {{marginRight: 30}}
+            />
+            </a> 
+            
 
             &copy; {new Date().getFullYear()} Copyright: Huy Lê. All rights reserved
     

@@ -45,7 +45,7 @@ class PageHeader extends Component {
                         </Menu.Item>
 
                         <Menu.Item key="keyAbout" >
-                            <span>About us</span>
+                            <Link to =  "/about-us" > About Us </Link> 
                         </Menu.Item>
 
                         </Menu>

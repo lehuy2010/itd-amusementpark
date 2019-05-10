@@ -13,6 +13,15 @@ router.get('/', (req,res) => {
     })
 })
 
+router.post('/promotion', (req,res) => {
+    ticketRepo.loadPromotion(req.body.bookDate)
+    .then(result => {
+        res.json(result);
+    }).catch(err => {
+        console.log(err)
+        res.statusCode = 500;
+    })
+})
 
 router.post('/prices',(req,res) => {
     

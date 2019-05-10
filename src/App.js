@@ -9,6 +9,7 @@ import GamesServices from './components/game-services-page';
 import {Route} from 'react-router-dom'
 import Introduction from './components/introduction';
 import Contact from './components/contacts';
+import AboutUs from './components/about-us';
 // const {
 //    Content, Header, Footer
 // } = Layout
@@ -23,6 +24,7 @@ class App extends Component {
         <Route path = "/introduction" component = {Introduction} />
         <Route path = "/games" component = {GamesServices} />
         <Route path = "/contact" component = {Contact } />
+        <Route path = "/about-us" component = {AboutUs} />
         <div className="push"></div>
         <PageFooter />
       </div>
