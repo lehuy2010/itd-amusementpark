@@ -29,13 +29,13 @@ class Slider extends Component {
             autoplay = 'true'
             >
             <div>
-                <img src={require('../image/image2.jpg')} className='picture-home' alt = 'some text'/>    
+                <img src={require('../image/Home/image2.jpg')} className='picture-home' alt = ''/>    
             </div>
             <div>
-                <img src={require('../image/image1.jpg')} className='picture-home' alt = 'some text' />    
+                <img src={require('../image/Home/image1.jpg')} className='picture-home' alt = '' />    
             </div>
             <div>
-                <img src={require('../image/image3.jpg')} className='picture-home' alt = 'some text'/>    
+                <img src={require('../image/Home/image3.jpg')} className='picture-home' alt = ''/>    
             </div>
                 
             </Carousel>

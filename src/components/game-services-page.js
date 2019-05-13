@@ -44,7 +44,7 @@ class GamesServices extends Component {
                         this.state.gamesInformation.map((content, index) => {
                             return (
                                 <GameCard gameType={content.TicketTypeName}
-                                    coverImage='ca-chep-nhao-lon.jpg'
+                                    coverImage={content.ImageURL}
                                     key={index}
                                 />
                                 

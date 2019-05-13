@@ -14,13 +14,19 @@ class GameCard extends Component {
      this.showGameCard = this.showGameCard.bind(this)
 
     }
-    showGameCard(props) {
+    showGameCard() {
         return (
         <Col span = {6} >
             <Card
             hoverable
             style = {{width: '100%', textAlign: 'center', marginTop: '16px'}}
-            cover = { <img alt = 'KidPlaygroup' src = {require('../image/'+ this.props.coverImage)} />}
+            cover = {
+            <img 
+            alt = 'KidPlaygroup'
+            src = {require('../image/Games/'+ this.props.coverImage)}
+            style = {{height: '300px', width: '316px'}}
+            />
+            }
             >
             <Meta 
                 title = {this.props.gameType}

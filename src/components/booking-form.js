@@ -3,7 +3,7 @@ import moment from 'moment';
 import '../App.css';
 import {
     Form, Input, Col,  Select,DatePicker, Row,
-    InputNumber,Button, Icon, message
+    InputNumber,Button, Icon
 } from 'antd';
 import axios from 'axios'
 import QRCode from 'qrcode.react'
@@ -27,6 +27,9 @@ class BookForm extends Component {
             ticketNumber: [],   // dùng để lưu số lượng loại vé được chọn vào một chuỗi
             ticketType: [],     // dùng để lưu các loại vé được chọn vào một chuỗi
             Promotion: [],
+            selectedPromotionContent: "",  // nội dung ct khuyến mãi đang được chọn
+            selectedPromotionID: "",
+            isPromotionEnable: true  // dùng để cho ng dùng chỉ được chọn trường promotion khi đã chọn trường vé 1 lần 
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleDate = this.handleDate.bind(this)
@@ -38,6 +41,8 @@ class BookForm extends Component {
         this.removeTicketField = this.removeTicketField.bind(this)
         this.handlePrice = this.handlePrice.bind(this)
         this.handlePromotionContent = this.handlePromotionContent.bind(this)
+        this.applyPromotion = this.applyPromotion.bind(this)
+        this.handlePromotionChange = this.handlePromotionChange.bind(this)
     }
 
     
@@ -64,7 +69,8 @@ class BookForm extends Component {
             console.log(err);
         })
         
-        document.title = 'Đặt vé online'
+        document.title = 'Đặt vé online';
+        
     }
     
     addTicketField = () => {
@@ -93,28 +99,42 @@ class BookForm extends Component {
         form.setFieldsValue({
             keys: newkey,
         },() => { 
-            this.handlePrice()      // sau khi xóa trường đó xong gọi hàm này để cập nhật lại giá vé hiện tại
+            this.handlePrice();      // sau khi xóa trường đó xong gọi hàm này để cập nhật lại giá vé hiện tại
         });
 
     }
 
     handleChange = (event) => {
-        const {name, value} = event.target
+        const {name, value} = event.target 
         this.setState({
-            [name]: value
+            [name]: value 
         })
     }
 
     handleSelect (value) {
-        console.log("giá trị value: ",value);
         this.setState ({
             ticketType: value
         })
     }
 
-    
+    handlePromotionChange (value) {
+        console.log(`promotion tên là  ${value}`);
+        let selected = `${value}`
+        this.handlePromotionContent(selected)
+        this.setState ({ 
+            selectedPromotionID: selected
+        })
+    }
+
+    handlePromotionContent(value) {
+        this.state.Promotion.map((content,index) => {
+            content.PromotionID == value ? this.setState ({
+                selectedPromotionContent: content.Description
+            }) : null
+        })
+    }
     handleNumberChange (value) {
-        console.log("số đổi thành : " + value );
+       // console.log("số đổi thành : " + value );
         if( value === null || value === '')
         value = 0;
         this.setState ({
@@ -132,10 +152,7 @@ class BookForm extends Component {
         var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
             return index !== null && index !== undefined
         });
-
-        // console.log('loại vé đã chọn là: ', filteredTicketType);
-        // console.log("số vé là : ", filteredTicketNumber);
-        // HAI HÀM NÀY DÙNG ĐỂ FILTER RA PHẦN TỬ EMPTY CỦA TRƯỜNG SAU KHI BẤM NÚT XÓA (removeTicketField)
+        
         axios.post(`http://localhost:4000/ticket/prices/total`,{
             selectedTickets: filteredTicketType,
             selectedAmount: filteredTicketNumber
@@ -148,6 +165,28 @@ class BookForm extends Component {
         }).catch(err => {
             console.log('Có lỗi: ',err);
         })
+        if (filteredTicketNumber != 0 ){     // ngăn trường hợp lỗi khi khách hàng vừa đến mục mua vé
+                                             // bấm vào chọn loại vé => chưa đặt số lượng đã trigger
+                                             // onBlur => mảng rỗng không xài filter được => lỗi   
+            var ticketsSum = filteredTicketNumber.reduce((filteredTicketNumber,value) => {
+            return parseInt(filteredTicketNumber) + parseInt(value)
+        }) ;
+
+        if (filteredTicketNumber != null && filteredTicketType != null) // chỉ enable cho ng dùng
+                                    // chọn mục promotion khi họ đã chọn cả tên vé và số lượng vé
+        {
+            this.setState({
+                isPromotionEnable: false
+            })
+        }
+
+        console.log('mảng vé', filteredTicketNumber)
+        console.log('tổng số vé', ticketsSum)
+        console.log('loại vé đã chọn là: ', this.state.ticketType);
+        console.log('loại khuyến mãi được chọn: ', this.state.selectedPromotionID)
+
+        } 
+        
     }
     
     handleSubmit(e) {
@@ -162,6 +201,8 @@ class BookForm extends Component {
                 var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
                     return index !== null
                 });
+
+                
                 this.setState({
                     ticketType: filteredTicketType,
                     ticketNumber: filteredTicketNumber
@@ -194,12 +235,10 @@ class BookForm extends Component {
         })
     }
 
-    handlePromotionContent(value) {
-        this.state.Promotion.map((content,index) => {
-            content.PromotionName == value ? console.log(content.Description) : null
-        })
+    applyPromotion (type) {
         
     }
+
     disableDate(current) {
         let today = moment().format(dateFormat);
         let nextWeek =  moment().add(7,'days').format(dateFormat);
@@ -230,7 +269,8 @@ class BookForm extends Component {
                         style={{ width: 400 }}
                         name="ticketType"
                         placeholder="- Hãy chọn loại vé -"
-                        onChange={this.handleSelect}>
+                        onChange={this.handleSelect}
+                        onBlur = {this.handlePrice}>
                         {
                             this.state.ticketArray.map((content, index) => {
                                 return (
@@ -371,7 +411,7 @@ class BookForm extends Component {
                         <Form.Item
                             label="Ngày tham quan"
                         >
-                        {getFieldDecorator('Ngày tham quan', {
+                        {getFieldDecorator('Ngày tham quan ', {
                             rules: [{
                                 initialValue : this.state.ticketDate.format(dateFormat),
                                 type: 'object', required: true, message: 'Please select time!'
@@ -385,34 +425,9 @@ class BookForm extends Component {
                             />
                         )}
                         </Form.Item>
-                        <Form.Item>
-                            {getFieldDecorator(`promotionField`, {
-                                validateTrigger: ['onBlur'],
-                                rules: [{
-                                    initialValue: this.state.Promotion
-                                }]
-                            })(
-                                <Select
-                                    style={{ width: 400 }}
-                                    name="Promotion"
-                                    placeholder='chọn đi'
-                                    onChange={this.handlePromotionContent}>
-                                    {
-                                        this.state.Promotion.map((content, index) => {
-                                            return (
-                                                <Option
-                                                    value={content.PromotionName}
-                                                    key={index}>
-                                                    {content.PromotionName}
-                                                </Option>
-                                            )
-                                        })}
-                                </Select>
-                            )}
-                        </Form.Item>
-  
-                        {ticketField}
 
+                        {ticketField}
+                        
                         <Form.Item
 
                         >
@@ -423,6 +438,44 @@ class BookForm extends Component {
                                 <Icon type="plus" /> Mua thêm vé
                             </Button>
                         </Form.Item>
+
+                        <Form.Item label = 'Chương trình khuyến mãi'>
+                            {getFieldDecorator(`promotionField`, {
+                                validateTrigger: ['onBlur'],
+                                rules: [{
+                                    initialValue: this.state.Promotion,
+                                }]
+                            })(
+                                <div>
+                                   <Select
+                                    style={{ width: 400 }}
+                                    name="selectedPromotionContent"
+                                    placeholder='- Chương trình khuyến mãi -'
+                                    onChange={this.handlePromotionChange}
+                                    disabled = {this.state.isPromotionEnable}
+                                    >
+                                    {
+                                        this.state.Promotion.map((content, index) => {
+                                            return (
+                                                  <Option
+                                                    value={content.PromotionID}
+                                                    key={index}
+                                                    >
+                                                    {content.PromotionName}
+                                                </Option>  
+                                            )
+                                        })}
+                                </Select> 
+                                <h4> {this.state.selectedPromotionContent} </h4>
+                               
+                                </div>
+                                
+                            )}
+                        </Form.Item>
+  
+                        
+
+                        
                         <Form.Item >
                             <Button
                                 type="primary"
