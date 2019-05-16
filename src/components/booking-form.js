@@ -3,11 +3,11 @@ import moment from 'moment';
 import '../App.css';
 import {
     Form, Input, Col,  Select,DatePicker, Row,
-    InputNumber,Button, Icon
+    InputNumber,Button, Icon, Spin
 } from 'antd';
 import axios from 'axios'
 import QRCode from 'qrcode.react'
-
+const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 /*eslint-disable */
 const { Option } = Select;
 let id = 0;
@@ -16,6 +16,7 @@ class BookForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            isLoading: true,
             customerName: "",
             customerEmail: "",
             phoneInput: "",
@@ -28,21 +29,9 @@ class BookForm extends Component {
             ticketType: [],     // dùng để lưu các loại vé được chọn vào một chuỗi
             Promotion: [],
             selectedPromotionContent: "",  // nội dung ct khuyến mãi đang được chọn
-            selectedPromotionID: "",
+            selectedPromotionID: 0,
             isPromotionEnable: true  // dùng để cho ng dùng chỉ được chọn trường promotion khi đã chọn trường vé 1 lần 
         }
-        this.handleChange = this.handleChange.bind(this)
-        this.handleDate = this.handleDate.bind(this)
-        this.handleNumberChange = this.handleNumberChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleSelect = this.handleSelect.bind(this)
-        this.disableDate = this.disableDate.bind(this)
-        this.addTicketField = this.addTicketField.bind(this)
-        this.removeTicketField = this.removeTicketField.bind(this)
-        this.handlePrice = this.handlePrice.bind(this)
-        this.handlePromotionContent = this.handlePromotionContent.bind(this)
-        this.applyPromotion = this.applyPromotion.bind(this)
-        this.handlePromotionChange = this.handlePromotionChange.bind(this)
     }
 
     
@@ -51,7 +40,8 @@ class BookForm extends Component {
         axios.get(`http://localhost:4000/ticket`)
         .then(response => {
             this.setState({
-                ticketArray: response.data
+                ticketArray: response.data,
+                isLoading: false
             })
         })
         .catch(error => {
@@ -70,7 +60,7 @@ class BookForm extends Component {
         })
         
         document.title = 'Đặt vé online';
-        
+        window.scrollTo(0,0);
     }
     
     addTicketField = () => {
@@ -111,14 +101,13 @@ class BookForm extends Component {
         })
     }
 
-    handleSelect (value) {
+    handleSelect = (value) => {
         this.setState ({
             ticketType: value
         })
     }
 
-    handlePromotionChange (value) {
-        console.log(`promotion tên là  ${value}`);
+    handlePromotionChange = (value) => {
         let selected = `${value}`
         this.handlePromotionContent(selected)
         this.setState ({ 
@@ -126,14 +115,14 @@ class BookForm extends Component {
         })
     }
 
-    handlePromotionContent(value) {
+    handlePromotionContent = (value) => {
         this.state.Promotion.map((content,index) => {
             content.PromotionID == value ? this.setState ({
                 selectedPromotionContent: content.Description
             }) : null
         })
     }
-    handleNumberChange (value) {
+    handleNumberChange = (value) => {
        // console.log("số đổi thành : " + value );
         if( value === null || value === '')
         value = 0;
@@ -143,7 +132,7 @@ class BookForm extends Component {
        
     }
 
-    handlePrice () {
+    handlePrice = () => {
         
         var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
             return index !== null && index !== undefined
@@ -152,10 +141,30 @@ class BookForm extends Component {
         var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
             return index !== null && index !== undefined
         });
+        // - 2 mảng tên vé và số lượng vé đã lọc ra các giá trị null và undefined (khi bấm dấu xóa)
         
+        if (filteredTicketNumber != 0 ){     // ngăn trường hợp lỗi khi khách hàng vừa đến mục mua vé
+            // bấm vào chọn loại vé => chưa đặt số lượng đã bấm ra
+            // ngoài trigger onBlur => mảng rỗng không xài filter được => lỗi  
+
+        var ticketsSum = filteredTicketNumber.reduce((filteredTicketNumber, value) => {
+            return parseInt(filteredTicketNumber) + parseInt(value)
+        });
+
+        if (filteredTicketNumber != null && filteredTicketType != null) // chỉ enable cho ng dùng
+        // chọn mục promotion khi họ đã chọn cả tên vé và số lượng vé
+        {
+            this.setState({
+                isPromotionEnable: false
+            })
+        }
+
+
         axios.post(`http://localhost:4000/ticket/prices/total`,{
             selectedTickets: filteredTicketType,
-            selectedAmount: filteredTicketNumber
+            selectedAmount: filteredTicketNumber,
+            selectedPromoID: this.state.selectedPromotionID,
+            totalTicket: ticketsSum
         })
         .then (totalSum => {
             console.log('Tổng cộng tiền vé lúc này: ',totalSum.data);
@@ -165,31 +174,16 @@ class BookForm extends Component {
         }).catch(err => {
             console.log('Có lỗi: ',err);
         })
-        if (filteredTicketNumber != 0 ){     // ngăn trường hợp lỗi khi khách hàng vừa đến mục mua vé
-                                             // bấm vào chọn loại vé => chưa đặt số lượng đã trigger
-                                             // onBlur => mảng rỗng không xài filter được => lỗi   
-            var ticketsSum = filteredTicketNumber.reduce((filteredTicketNumber,value) => {
-            return parseInt(filteredTicketNumber) + parseInt(value)
-        }) ;
-
-        if (filteredTicketNumber != null && filteredTicketType != null) // chỉ enable cho ng dùng
-                                    // chọn mục promotion khi họ đã chọn cả tên vé và số lượng vé
-        {
-            this.setState({
-                isPromotionEnable: false
-            })
-        }
-
-        console.log('mảng vé', filteredTicketNumber)
-        console.log('tổng số vé', ticketsSum)
-        console.log('loại vé đã chọn là: ', this.state.ticketType);
-        console.log('loại khuyến mãi được chọn: ', this.state.selectedPromotionID)
+        // console.log('bạn đã chọn promotion có id: ', this.state.selectedPromotionID);
+        // console.log('mảng vé', filteredTicketNumber)
+        // console.log('tổng số vé', ticketsSum)
+        // console.log('loại vé đã chọn là: ', this.state.ticketType);
 
         } 
         
     }
     
-    handleSubmit(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
 
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -228,18 +222,18 @@ class BookForm extends Component {
         })
     }
 
-    handleDate (date) {
+    handleDate = (date) => {
         let newDate = date
         this.setState({
             ticketDate: newDate
         })
     }
 
-    applyPromotion (type) {
+    applyPromotion = (type) => {
         
     }
 
-    disableDate(current) {
+    disableDate = (current) => {
         let today = moment().format(dateFormat);
         let nextWeek =  moment().add(7,'days').format(dateFormat);
         return current && (current < moment(today, dateFormat) || current > moment(nextWeek, dateFormat));
@@ -272,6 +266,7 @@ class BookForm extends Component {
                         onChange={this.handleSelect}
                         onBlur = {this.handlePrice}>
                         {
+                            this.state.isLoading ? <Spin indicator = {loadingIcon} /> : 
                             this.state.ticketArray.map((content, index) => {
                                 return (
                                     <Option
@@ -450,8 +445,9 @@ class BookForm extends Component {
                                    <Select
                                     style={{ width: 400 }}
                                     name="selectedPromotionContent"
-                                    placeholder='- Chương trình khuyến mãi -'
+                                    placeholder='---'
                                     onChange={this.handlePromotionChange}
+                                    onBlur = {this.handlePrice}
                                     disabled = {this.state.isPromotionEnable}
                                     >
                                     {

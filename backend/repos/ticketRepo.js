@@ -21,11 +21,28 @@ function xoadau (str) {
     return str;
 }
 exports.loadTypeAndPrice = ()  => {
-    var sql = 'select TicketName,Price from Ticket';
+
+    var sql = `select TicketName,Price from Ticket where IsUsed = 'true'`;
     return db.load(sql);
 }
 
+exports.loadTicketDetail = () => {
+    var sql = `
+    select 
+    TT.TicketTypeID as idVE,
+    TT.TicketTypeName as tenVE,
+    TT.Description as motaVe,
+    T1.Price as adultGia,
+    T1.IsUsed as adultUsed,
+    T2.Price as childGia,
+    T2.IsUsed as childUsed
+    from TicketType as TT, Ticket as T1, Ticket as T2
+    where TT.TicketTypeID = T1.TicketTypeID and TT.TicketTypeID = T2.TicketTypeID
+	and T1.CustomerTypeID = 1 and T2.CustomerTypeID = 2
+    `;
+    return db.load(sql);
 
+}
 exports.findPrice = Type => {
     var sql  = `select Price from Ticket where TicketName = N'${Type}'`;
     return db.load(sql);
@@ -90,8 +107,12 @@ exports.getTicketCodeForQR = e => {
 }
 
 exports.loadPromotion = bookDate => {
-    console.log('biến bookdate sau khi đã tostirng: ', bookDate.toString());
     var sql = `select * from Promotion where '${bookDate.toString()}' > FromTime and '${bookDate.toString()}' < ToTime`;
-    return db.load(sql)
+    return db.load(sql);
+}
+
+exports.findPromotionDetail = PromoID => {          // tìm thông tin của ctrinh promotion
+    var sql = `select * from Promotion where PromotionID = '${PromoID}'`;
+    return db.load(sql);
 }
 

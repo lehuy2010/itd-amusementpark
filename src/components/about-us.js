@@ -1,37 +1,17 @@
 /*eslint-disable */
-import React, { Component } from 'react';
+import React from 'react';
 import '../App.css';
-import {Avatar, Row, Col, Icon, Spin, Layout, Divider} from 'antd'
-const {Sider, Content} = Layout;
+import {Avatar, Row, Col, Layout, Divider} from 'antd'
 import PersonalData from '../files/personal-info.json'
-const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
-class AboutUs extends Component {
-    constructor(props) {
-        super(props)
-        this.state  = {
-            isLoading: true,
-        }
-        
-    }
-    componentDidMount () {
-        this.setState ({
-            isLoading: false
-        })
-        document.title = 'Về chúng tôi'
-    }
+// const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 
-    render() {
-        
+const AboutUs = () => {
+        document.title = 'Về chúng tôi'
+        window.scrollTo(0,0);
         return (
-            this.state.isLoading ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <Spin
-                indicator = {loadingIcon}
-            />
-        </div> : 
             <div>
                 <Layout>
                     <Layout>
-                       
                         {PersonalData.map((data, index) => {
                             return ( 
                                 <Row 
@@ -62,7 +42,6 @@ class AboutUs extends Component {
                                     <Col span = {16}>
                                     <h3 >{data.description}</h3>
                                     </Col>
-                                    
                                  </div>
                                 </Row>
                             )
@@ -70,10 +49,6 @@ class AboutUs extends Component {
                     </Layout>
                 </Layout>
             </div>
-                
-                
         )
     }
-}
-
 export default AboutUs

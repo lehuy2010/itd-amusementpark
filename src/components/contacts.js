@@ -1,12 +1,8 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import '../App.css';
-import { Icon } from 'antd'
-class Contact extends Component {
-    componentDidMount () {
-        document.title = 'Liên hệ'
-    }
-    render() {
+const Contact = () => {
+    document.title = 'Liên hệ'
         return (
             <div style = {{
                 marginTop: '100px',
@@ -20,6 +16,4 @@ class Contact extends Component {
             </div>
         )
     }
-}
-
 export default Contact

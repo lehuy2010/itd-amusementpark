@@ -36,9 +36,15 @@ router.post('/prices',(req,res) => {
 router.post('/prices/total', async (req, res) => {
     info = {
         Amount:  req.body.selectedAmount,
-        TicketType: req.body.selectedTickets
+        TicketType: req.body.selectedTickets,
+        PromoID: req.body.selectedPromoID,
+        TotalTicket: req.body.totalTicket
     }
+    
     var TongTienAllFields = 0;
+    var promotionDetail = 0;
+    var promoPercent = 0; // 
+    var promoLimit = 0; 
     for( let i = 0; i < info.Amount.length; i++ )
     {
        
@@ -46,13 +52,40 @@ router.post('/prices/total', async (req, res) => {
         // console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
         // console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
         var GiaVe = priceTransResult[0].Price;
-        var SoLuongVe = info.Amount[i]
-        // console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+        var SoLuongVe = info.Amount[i];
+    
         TongTienAllFields += GiaVe * SoLuongVe;
+        if (info.PromoID !== 0){
+        promotionDetail = await ticketRepo.findPromotionDetail(info.PromoID);  
+        console.log('trước khi so sánh, tổng vé là: ', info.TotalTicket);
+        if (info.TotalTicket  >= promotionDetail[0].MinTicketAmount && TongTienAllFields > promotionDetail[0].MinTotalPrice)
+
+            promoPercent = promotionDetail[0].DiscountPercent
+            
+            promoLimit = (TongTienAllFields * (promoPercent / 100))
+            console.log('giá trị tiền limit lúc này: ', promoLimit)
+            if (promoLimit > promotionDetail[0].MaxDiscount)
+            promoLimit = promotionDetail[0].MaxDiscount
+
+        }
+        
+        
+        //console.log('thông tin khuyến mãi', promotionDetail[0].MinTicketAmount)
+        // console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+      
     }
-    // console.log('biến tongtienallfields:',TongTienAllFields);
+    TongTienAllFields = TongTienAllFields - promoLimit
+     console.log('biến tongtienallfields:',TongTienAllFields);
     // return Promise.resolve(TongTienAllFields);
     res.json(TongTienAllFields);
+})
+
+router.get('/prices', (req,res) => {
+    ticketRepo.loadTicketDetail().then(result => { 
+        res.json(result)
+    }).catch(err => {
+            console.log(err);
+        })
 })
 
 router.post('/submit', async (req,res) => {
@@ -137,14 +170,14 @@ router.post('/send', async (req,res) => {
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-          user: 'nguyenlehuy1101@gmail.com', // generated ethereal user
-          pass: '19001560' // generated ethereal password
+          user: 'nguyenlehuy1101@gmail.com', 
+          pass: '19001560' 
         }
       });
     
       // send mail with defined transport object
       let info = await transporter.sendMail({
-        from: '"Huy Nguyễn Lê 👻" <nguyenlehuy1101@gmail.com>', // sender address
+        from: '"Huy Nguyễn Lê" <nguyenlehuy1101@gmail.com>', // sender address
         to: req.body.params.customerEmail, // list of receivers
         subject: "MÃ QRCODE CHO VÉ KHU VUI CHƠI ITD AMUSEMENT PARK", // Subject line
         text: "text nguyễn lê huy", // plain text body

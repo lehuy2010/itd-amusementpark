@@ -37,7 +37,7 @@ class PageHeader extends Component {
                         </Menu.Item>
 
                         <Menu.Item key="keyPrice" >
-                            <span>Giá vé </span>
+                            <Link to = "/prices" > Giá vé </Link>
                         </Menu.Item>
 
                         <Menu.Item key="keyBookticket" >

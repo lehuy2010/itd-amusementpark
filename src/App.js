@@ -10,21 +10,22 @@ import {Route} from 'react-router-dom'
 import Introduction from './components/introduction';
 import Contact from './components/contacts';
 import AboutUs from './components/about-us';
-// const {
-//    Content, Header, Footer
-// } = Layout
+import PriceTable from './components/ticket-prices';
+
+// : scroll lên đầu trang mỗi khi route qua lại các trang
 class App extends Component {
   render() {
     return (
       <div>
         <PageHeader />
         <div className='push'> </div>
-        <Route exact path = "/" component = {Homepage} />
-        <Route path = "/book" component = {BookForm} />
-        <Route path = "/introduction" component = {Introduction} />
-        <Route path = "/games" component = {GamesServices} />
-        <Route path = "/contact" component = {Contact } />
-        <Route path = "/about-us" component = {AboutUs} />
+        <Route exact path = "/" component = {Homepage}  />
+        <Route path = "/book" component = {BookForm}  />
+        <Route path = "/introduction" component = {Introduction}  />
+        <Route path = "/games" component = {GamesServices}  />
+        <Route path = "/contact" component = {Contact }  />
+        <Route path = "/about-us" component = {AboutUs}  />
+        <Route path = "/prices" component = {PriceTable} />
         <div className="push"></div>
         <PageFooter />
       </div>

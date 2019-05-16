@@ -11,6 +11,7 @@ class Introduction extends Component {
     }
     componentDidMount() {
         document.title = 'Giới thiệu'
+        window.scrollTo(0,0);
     }
     render () { 
         var settings = {
