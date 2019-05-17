@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Switch, Route,Router, Link} from 'react-router-dom'
 import { Layout, Menu} from 'antd';
 import '../App.css';
-import Homepage from './homepage-body';
 
 const {
     Header

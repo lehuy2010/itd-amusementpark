@@ -124,3 +124,14 @@ a.nav-link:active
    color: white;
    text-decoration: none;
 }
+
+td,th
+{
+  text-align: center !important;
+  font-size: 18px;
+}
+.ant-table-title {
+  font-size: 36px;
+  text-align: center;
+  color: #389e0d
+}

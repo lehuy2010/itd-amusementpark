@@ -8,9 +8,9 @@ import GamesServices from './components/game-services-page';
 // import  { Layout } from 'antd'
 import {Route} from 'react-router-dom'
 import Introduction from './components/introduction';
-import Contact from './components/contacts';
-import AboutUs from './components/about-us';
-import PriceTable from './components/ticket-prices';
+import Contact from './components/Contacts-Page/contacts';
+import AboutUs from './components/AboutUs-Page/about-us';
+import PriceTable from './components/ticket-price';
 
 // : scroll lên đầu trang mỗi khi route qua lại các trang
 class App extends Component {

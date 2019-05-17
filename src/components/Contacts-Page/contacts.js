@@ -1,6 +1,5 @@
 
 import React from 'react';
-import '../App.css';
 const Contact = () => {
     document.title = 'Liên hệ'
         return (

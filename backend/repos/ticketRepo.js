@@ -29,12 +29,12 @@ exports.loadTypeAndPrice = ()  => {
 exports.loadTicketDetail = () => {
     var sql = `
     select 
-    TT.TicketTypeID as idVE,
-    TT.TicketTypeName as tenVE,
+    TT.TicketTypeID as idVe,
+    TT.TicketTypeName as tenVe,
     TT.Description as motaVe,
     T1.Price as adultGia,
-    T1.IsUsed as adultUsed,
     T2.Price as childGia,
+    T1.IsUsed as adultUsed,
     T2.IsUsed as childUsed
     from TicketType as TT, Ticket as T1, Ticket as T2
     where TT.TicketTypeID = T1.TicketTypeID and TT.TicketTypeID = T2.TicketTypeID
@@ -88,9 +88,9 @@ exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, O
     var TransDetailInsert_SQL =
         `
             insert into DetailTransaction 
-            (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate, CounterCode)
+            (TransactionID, Ordinal, TicketCode, TicketID, TicketPrice, CreateDate, ExpiryDate)
             values (
-            '${TransIDNumber}', '${Ordinal}', '${TicketCodeArray}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}','${'01'}')
+            '${TransIDNumber}', '${Ordinal}', '${TicketCodeArray}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}')
             `
 
     console.log("++ TEST CÂU INSERT: " + TransDetailInsert_SQL);

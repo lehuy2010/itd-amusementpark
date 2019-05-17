@@ -4,6 +4,7 @@ var moment = require('moment')
 var router = express.Router();
 var nodemailer = require('nodemailer')
 var qrcode = require ('qrcode')
+var http = require('http')
 router.get('/', (req,res) => {
     ticketRepo.loadTypeAndPrice().then(rows => {
         res.json(rows);
@@ -57,13 +58,13 @@ router.post('/prices/total', async (req, res) => {
         TongTienAllFields += GiaVe * SoLuongVe;
         if (info.PromoID !== 0){
         promotionDetail = await ticketRepo.findPromotionDetail(info.PromoID);  
-        console.log('trước khi so sánh, tổng vé là: ', info.TotalTicket);
+        //console.log('trước khi so sánh, tổng vé là: ', info.TotalTicket);
         if (info.TotalTicket  >= promotionDetail[0].MinTicketAmount && TongTienAllFields > promotionDetail[0].MinTotalPrice)
 
             promoPercent = promotionDetail[0].DiscountPercent
             
             promoLimit = (TongTienAllFields * (promoPercent / 100))
-            console.log('giá trị tiền limit lúc này: ', promoLimit)
+            //console.log('giá trị tiền limit lúc này: ', promoLimit)
             if (promoLimit > promotionDetail[0].MaxDiscount)
             promoLimit = promotionDetail[0].MaxDiscount
 
@@ -97,22 +98,23 @@ router.post('/submit', async (req,res) => {
         Date: req.body.params.ticketDate,
         Amount:  req.body.params.ticketNumber,
         TicketType: req.body.params.ticketType,
+        TotalSum:req.body.params.ticketPriceSum
     }
     var TicketCodeArray = [];
     var DetailTransactionsOrdinal = 0; // Số Ordinal cho bảng DetailTransaction
-    var TongTienAllFields = 0;
-    for( let i = 0; i < info.Amount.length; i++ )
-    {
-        const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
-        // console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
-        // console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
-        var GiaVe = priceTransResult[0].Price;
-        var SoLuongVe = info.Amount[i]
-        // console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
-        TongTienAllFields += GiaVe * SoLuongVe;
-    }
-    console.log('mảng chứa tiền tổng cộng của các hạng mục vé - số lượng:', TongTienAllFields);
-    await ticketRepo.transactionInsert(TongTienAllFields, info.Phone)   //insert vào bảng Transactions
+    
+    // for( let i = 0; i < info.Amount.length; i++ )
+    // {
+    //     const priceTransResult = await ticketRepo.findPrice(info.TicketType[i])
+    //     // console.log('với i = ' + i + ' ,biến info.Amount[i] là : ' + parseInt(info.Amount[i]));
+    //     // console.log('với i = ' + i + ' ,biến info.TicketType[i] là : ' + info.TicketType[i])
+    //     var GiaVe = priceTransResult[0].Price;
+    //     var SoLuongVe = info.Amount[i]
+    //     // console.log("biến GiaVe - SoLuongVe: ", priceTransResult[0].Price + ' - ' + info.Amount[i])
+    //     TongTienAllFields += GiaVe * SoLuongVe;
+    // }
+    console.log('mảng chứa tiền tổng cộng của các hạng mục vé - số lượng:', info.TotalSum);
+    await ticketRepo.transactionInsert(info.TotalSum, info.Phone)   //insert vào bảng Transactions
     
     for (let i = 0; i < info.Amount.length; i++ )
     {

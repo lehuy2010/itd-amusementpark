@@ -409,7 +409,7 @@ class BookForm extends Component {
                         {getFieldDecorator('Ngày tham quan ', {
                             rules: [{
                                 initialValue : this.state.ticketDate.format(dateFormat),
-                                type: 'object', required: true, message: 'Please select time!'
+                                type: 'object', required: true, message: 'Hãy chọn ngày sử dụng vé'
                                 }],
                         })(
                             <DatePicker
@@ -481,9 +481,14 @@ class BookForm extends Component {
                             </Button>
                             
                             <div className = 'ticket-price-area' >
-                              Tổng cộng: <div style = {{color:'#f5222d', fontSize: 'x-large'}}>
-                                 {this.state.ticketPriceSum.toLocaleString('vi-vn')} đồng </div>
+                              Tổng cộng: 
+                            {
+                                this.state.ticketPriceSum !== 0 ?
+                            <div style = {{color:'#f5222d', fontSize: 'x-large'}}>
+                        {this.state.ticketPriceSum.toLocaleString('vi-vn')} đồng </div> 
+                            : <div></div>} 
                             </div>
+                            
                         </Form.Item>
                         
                     </Form>
