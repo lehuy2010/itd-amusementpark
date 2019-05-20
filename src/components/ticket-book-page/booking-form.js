@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import '../App.css';
+import './App.css';
 import {
     Form, Input, Col,  Select,DatePicker, Row,
     InputNumber,Button, Icon, Spin
 } from 'antd';
 import axios from 'axios'
-import QRCode from 'qrcode.react'
 const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 /*eslint-disable */
 const { Option } = Select;
@@ -203,22 +202,20 @@ class BookForm extends Component {
                 }, () => {
                     axios.post(`http://localhost:4000/ticket/submit`, {
                         params: this.state
+                    }).catch(err => {
+                        console.log(err);
                     })
-                        .then(res => {
-                            // console.log('đây là biến values: ', values)
-                            // console.log('đây là data: ', res.data);
-                            this.setState({
-                                ticketQR: res.data
-                            })
-                            console.log('cục qrcode: ', res.data);
-                        })
                 })
-                // axios.post(`http://localhost:4000/ticket/send`, {
-                //     params: this.state
-                // }).then(res => {
-                //     console.log('Email đã được gửi');
-                // })
+               
+                axios.post(`http://localhost:4000/ticket/send`, {
+                    params: this.state
+                }).then(res => {
+                    console.log('Email đã được gửi');
+                }).catch(err => {
+                    console.log(err);
+                })
             }
+            // LÀM PHẦN NHẢY RA THÔNG BÁO NỮA
         })
     }
 
@@ -468,10 +465,6 @@ class BookForm extends Component {
                                 
                             )}
                         </Form.Item>
-  
-                        
-
-                        
                         <Form.Item >
                             <Button
                                 type="primary"
@@ -493,16 +486,6 @@ class BookForm extends Component {
                         
                     </Form>
                     
-                    {this.state.ticketQR.map((QRString, index) => {
-                        return (
-                            <QRCode
-                            key = {index}
-                            value = {JSON.stringify(QRString)} 
-                            size = {256}
-                            style = {{marginBottom: 20, marginRight: 50, marginTop: 200}}
-                            />
-                        )
-                    })}
                     
                 </Col>
                 

@@ -1,0 +1,19 @@
+.introduction-title {
+    color: #389e0d;
+    margin-top: 150px
+}
+
+.picture-introduction {
+    display: block;
+    width: 400px;
+    height: 200px;
+}
+.ant-typography h3 {
+    color: #595959;
+}
+
+.ant-typography h1 {
+    color: #002909;
+    margin-bottom: 2px;
+}
+  

@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
 import { Switch, Route,Router, Link} from 'react-router-dom'
-import { Layout, Menu} from 'antd';
-import '../App.css';
+import { Layout, Menu, Icon} from 'antd';
 
 const {
     Header
 } = Layout  // làm vầy để khỏi làm giống như bootstrap, chẳng hạn Layout.Item,...
-
-
 class PageHeader extends Component { 
     render() {
         return (
@@ -46,8 +43,14 @@ class PageHeader extends Component {
                         <Menu.Item key="keyAbout" >
                             <Link to =  "/about-us" > About Us </Link> 
                         </Menu.Item>
-
+                        <Menu.Item    
+                            style = {{position: 'relative', marginLeft: '500px' }}                        
+                            key="keyAdmin" >
+                            <Icon type="user" style = {{fontSize: '28px', marginLeft: '10px'}}/>
+                            <Link to = "/prices" ></Link>
+                        </Menu.Item>
                         </Menu>
+                        
                 </Header>
             </Layout>
 

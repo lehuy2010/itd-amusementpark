@@ -149,24 +149,41 @@ router.post('/submit', async (req,res) => {
 })
 
 router.post('/send', async (req,res) => {
-    var tempQRArray = [];
-    var QRLength = req.body.params.ticketQR;
-    for (let i = 0; i < req.body.params.ticketQR.length ; i ++  )
-        {
-            console.log('chuỗi qr code trong vòng lặp là: ', JSON.stringify(req.body.params.ticketQR[i]))
-        }
+    information = req.body.params;
+
     const output = `
-    <p> Đây là mã QRCode cho các vé của khu vui chơi iTD Amusement Park mà bạn đã đặt mua </p>
-    <p> Vui lòng bảo quản các mã QRCode này để đảm bảo tính bảo mật của vé của bạn. Hệ thống sẽ không chịu trách nhiệm về việc thất lạc/mất mát mã QRCode </p>
-    <h3> Các mã QRCode </h3>
+    <p>Cảm ơn bạn đã mua vé tại khu vui chơi iTD Amusement Park </p>
+    <p> Khi đến quầy thanh toán, hãy cung cấp số điện thoại của bạn cho nhân viên để lấy vé</p>
+    <p style = "color:red"> Lưu ý: Vé chỉ có thể được lấy và sử dụng trước thời hạn sử dụng, sau thời gian này vé sẽ hết hạn và bị hủy </p>
+    <h3> Thông tin các vé mà bạn đã đặt mua </h3>
     <script>
-        for (let i = 0; i < ${req.body.params.ticketQR.length} ; i ++  )
-        {   var temp = i;
-            ${JSON.stringify(req.body.params.ticketQR[temp])}
-            <br>
-        }
     </script>
-    `;
+    
+    //     return (`
+    //         <div>
+    //             <p>Các vé đã mua :</p>
+    //             <p>${req.body.params.ticketType[index]} : ${data} vé</p>
+    //         </div>
+    //         `
+    //     )
+    // })}
+    // Tổng tiền: ${req.body.params.tickerPriceSum}
+    ;
+    
+    const nextDay = moment(information.ticketDate).add(1,'days').format('DD-MM-YYYY');
+    var htmlArr = [];
+    // console.log('tên: ', info.customerName)
+    // console.log('sdt: ', info.phoneInput)
+    // console.log('ngày mua: ', moment(info.ticketDate).format('DD-MM-YYYY'));
+    // console.log('ngày kế tiếp là: ', nextDay);
+    
+    information.ticketNumber.map(function(data, index) {
+        return (
+            
+                 console.log(`${data} vé ${information.ticketType[index]}`)
+            
+        )
+    })
     let transporter = nodemailer.createTransport({
         host: "smtp.googlemail.com",
         port: 465,
@@ -176,14 +193,30 @@ router.post('/send', async (req,res) => {
           pass: '19001560' 
         }
       });
-    
+      console.log(htmlArr);
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Huy Nguyễn Lê" <nguyenlehuy1101@gmail.com>', // sender address
         to: req.body.params.customerEmail, // list of receivers
         subject: "MÃ QRCODE CHO VÉ KHU VUI CHƠI ITD AMUSEMENT PARK", // Subject line
         text: "text nguyễn lê huy", // plain text body
-        html: output // html body
+        html:  `
+        <p>Cảm ơn bạn đã mua vé tại khu vui chơi iTD Amusement Park </p>
+        <p> Khi đến quầy thanh toán, hãy cung cấp số điện thoại của bạn cho nhân viên để lấy vé</p>
+        <p style = "color:red"> Lưu ý: Vé chỉ có thể được lấy và sử dụng trước thời hạn sử dụng, sau thời gian này vé sẽ hết hạn và bị hủy </p>
+        <h3> Thông tin các vé mà bạn đã đặt mua </h3>
+        <div>
+                Họ tên: <b>${information.customerName}</b> <br />
+                Số điện thoại đặt mua: <b>${information.phoneInput}</b> <br/>
+                Ngày mua vé : <b>${moment(information.ticketDate).format('DD-MM-YYYY')}</b> <br/>
+                Ngày hết hạn: <b>${nextDay}</b> <br/>
+                Thông tin các vé đã mua: <br/>
+                ${information.ticketNumber.map(function(data, index) {
+                    return (`<p><b> ${data} vé ${information.ticketType[index]}</b></p> `)
+                })}
+                
+                Tổng cộng: <b>${information.ticketPriceSum.toLocaleString('vi-vn')} đồng</b>
+    `
       });
     
      console.log("Message sent: %s", info.messageId);

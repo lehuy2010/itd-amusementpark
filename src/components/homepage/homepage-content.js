@@ -1,11 +1,10 @@
 /*eslint-disable */
 import React, { Component } from 'react';
-import '../App.css';
+import './App.css';
 import {Divider, Typography, Row} from 'antd';
-import GameCard from '../components/game-cards';
+import GameCard from '../games-card-component/game-cards'
 import axios from 'axios';
-import {Router} from 'react-router-dom'
-const {Title, Text } = Typography
+const {Title } = Typography
 class Content extends Component { 
     constructor (props) {
         super(props) 
@@ -50,10 +49,12 @@ class Content extends Component {
                             {
                                 this.state.gamesInformation.map((content, index) => {
                                     return (
+                                        content.IsUsed == true ?
                                         <GameCard gameType={content.TicketTypeName}
                                             coverImage={content.ImageURL}
+                                            ticketID = {content.TicketTypeID}
                                             key={index}
-                                        />
+                                        /> :null
                                     )
                                 })
                             }

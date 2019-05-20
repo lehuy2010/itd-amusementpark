@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../App.css';
+import './App.css';
 import { Carousel } from 'antd'
 class Slider extends Component {
     constructor() {
@@ -20,22 +20,17 @@ class Slider extends Component {
           };
         return (
           <Carousel {...settings}
-            style={{
-                height: '768px',
-                background: '#262626',
-                overflow: 'hidden',
-                width: 'fit - content'
-            }}
+            className= 'homepage-slide'
             autoplay = 'true'
             >
             <div>
-                <img src={require('../image/Home/image2.jpg')} className='picture-home' alt = ''/>    
+                <img src={require('./images/image2.jpg')} className='picture-home' alt = ''/>    
             </div>
             <div>
-                <img src={require('../image/Home/image1.jpg')} className='picture-home' alt = '' />    
+                <img src={require('./images/image1.jpg')} className='picture-home' alt = '' />    
             </div>
             <div>
-                <img src={require('../image/Home/image3.jpg')} className='picture-home' alt = ''/>    
+                <img src={require('./images/image3.jpg')} className='picture-home' alt = ''/>    
             </div>
                 
             </Carousel>

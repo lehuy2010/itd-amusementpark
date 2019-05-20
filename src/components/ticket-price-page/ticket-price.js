@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import '../App.css'
+import React from 'react'
+import './App.css'
 import TicketTable from './ticket-table';
 import TicketInfo from './ticket-information'
 const PriceTable = () => {

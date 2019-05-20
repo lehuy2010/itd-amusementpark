@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
-import '../App.css'
+import './App.css'
 
-import socialMediaData from '../files/social-media-links.json'
+import socialMediaData from './social-media-links.json'
 import {
     Layout, Icon
 } 

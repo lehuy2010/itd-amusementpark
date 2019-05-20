@@ -1,0 +1,38 @@
+.icon-modifier {
+    font-size: 40px;
+    margin-left: 15px;
+    margin-top: 17px;
+    text-align: left;
+    color: white;
+    text-decoration: none;
+}
+
+.form-modify {
+    margin-bottom: calc(100vh - 64px);
+    top: 94px;
+}
+.dynamic-delete-button {
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    font-size: 24px;
+    color: #999;
+    transition: all .3s;
+    margin-left: 7px
+}
+
+.dynamic-delete-button:hover {
+    color: #777;
+}
+
+.dynamic-delete-button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.ticket-price-area {
+    text-align: left;
+    color: #262626;
+    font-size: x-large;
+    margin-top: 10px;
+}

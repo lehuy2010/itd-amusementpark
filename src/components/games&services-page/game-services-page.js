@@ -1,9 +1,8 @@
 /*eslint-disable */
 import React, { Component } from 'react';
-import '../App.css';
 import {Icon, Spin, Row, Divider} from 'antd'
 import axios from 'axios'
-import GameCard from './game-cards'
+import GameCard from '../games-card-component/game-cards'
 const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 class GamesServices extends Component { 
     constructor(props) {
@@ -43,10 +42,12 @@ class GamesServices extends Component {
                     {
                         this.state.gamesInformation.map((content, index) => {
                             return (
+                                content.IsUsed == true ?  
                                 <GameCard gameType={content.TicketTypeName}
                                     coverImage={content.ImageURL}
+                                    ticketID = {content.TicketTypeID}
                                     key={index}
-                                />
+                                /> : null
                                 
                             )
                         })

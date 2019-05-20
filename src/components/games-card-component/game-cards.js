@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import '../App.css'
 import {Card, Col} from 'antd'
-
+import { Route, Link } from "react-router-dom";
+import GameDetails from './game-card-detail'
 const {Meta} = Card
-/*eslint-disable */
+
+
 
 class GameCard extends Component { 
     constructor(props) {
@@ -12,8 +13,14 @@ class GameCard extends Component {
         }
 
      this.showGameCard = this.showGameCard.bind(this)
-
+     
     }
+    handleClick = () => {
+        console.log('vừa click');
+        console.log(this.props.gameType)
+        console.log(this.props.ticketID);
+    }
+
     showGameCard() {
         return (
         <Col span = {6} >
@@ -21,18 +28,16 @@ class GameCard extends Component {
             hoverable
             style = {{width: '100%', textAlign: 'center', marginTop: '16px'}}
             cover = {
-            <img 
-            alt = 'KidPlaygroup'
-            src = {require('../image/Games/'+ this.props.coverImage)}
-            style = {{height: '300px', width: '316px'}}
-            />
-            }
+            <img alt = '' src = {require('./images/'+ this.props.coverImage)} 
+            style = {{height: '300px', width: '316px'}} />}
+            onClick = {this.handleClick}
             >
             <Meta 
                 title = {this.props.gameType}
                 style = {{marginTop: 30,
                  marginBottom : 20,}}
             />
+            <Link to = '/some:id'></Link>
             </Card>
         </Col>
         )
@@ -40,7 +45,7 @@ class GameCard extends Component {
 
     render() {
         return (
-            this.showGameCard(this.props.gameType, this.props.coverImage)
+            this.showGameCard(this.props.gameType, this.props.coverImage, this.props.ticketID)
         )
     }
 }

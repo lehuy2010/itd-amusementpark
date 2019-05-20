@@ -1,6 +1,6 @@
 
 import React, {Component} from 'react'
-import '../App.css'
+import './App.css'
 import { Typography, Timeline, Divider, Carousel  } from 'antd'
 const {Title} = Typography;
 
@@ -25,8 +25,8 @@ class Introduction extends Component {
         return (
             <div>
             <Typography align='center'>
-                <img src={require('../image/Introduction/introduction-default.png')} alt = ""/>
-                <Title style={{ color: '#389e0d', marginTop: '150px' }}
+                <img src={require('./images/introduction-default.png')} alt = ""/>
+                <Title className='introduction-title'
                 >
                     GIỚI THIỆU SƠ LƯỢC
                </Title>
@@ -70,38 +70,36 @@ class Introduction extends Component {
                 background: '#262626',
                 overflow: 'hidden',
                 width: 'fit-content'
-
             }}
             autoplay
             >
                     <div>
-                        <img src={require('../image/Introduction/introduction-slider-2.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
+                        <img src={require('./images/introduction-slider-1.jpg')}
+                            alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('../image/Introduction/introduction-slider-3.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
+                        <img src={require('./images/introduction-slider-2.jpg')}
+                            alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('../image/Introduction/introduction-slider-4.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
+                        <img src={require('./images/introduction-slider-3.jpg')}
+                            alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('../image/Introduction/introduction-slider-1.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
+                        <img src={require('./images/introduction-slider-4.jpg')}
+                            alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('../image/Introduction/introduction-slider-5.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
-                    </div>
-
-                    <div>
-                        <img src={require('../image/Introduction/introduction-slider-6.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
+                        <img src={require('./images/introduction-slider-5.jpg')}
+                            alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('../image/Introduction/introduction-slider-7.jpg')}
-                         alt='some text' className = 'picture-introduction'/>
+                        <img src={require('./images/introduction-slider-6.jpg')}
+                            alt='' className='picture-introduction' />
+                    </div>
+                    <div>
+                        <img src={require('./images/introduction-slider-7.jpg')}
+                            alt='' className='picture-introduction' />
                     </div>
             </Carousel>
             </div>

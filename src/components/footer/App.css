@@ -1,0 +1,16 @@
+.footer-modify {
+    width: 100%;
+    background-color: #001529;
+    color: white;
+    text-align: left;
+    height: 100px;
+  }
+  
+  .icon-modifier {
+    font-size: 40px;
+    margin-left: 15px;
+    margin-top: 17px;
+    text-align: left;
+    color: white;
+    text-decoration: none;
+  }

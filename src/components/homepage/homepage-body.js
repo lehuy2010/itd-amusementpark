@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react'
-import '../App.css';
+import './App.css';
 import Slider from './homepage-slider'
 import Content from './homepage-content'
 class Homepage extends Component {

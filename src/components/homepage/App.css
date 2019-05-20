@@ -1,0 +1,21 @@
+.ant-typography h3 {
+    color: #595959;
+}
+
+.ant-typography h1 {
+    color: #002909;
+    margin-bottom: 2px;
+}
+.homepage-slide {
+    height: 768px;
+    background: #262626;
+    overflow: hidden;
+    width: fit - content
+}
+
+.picture-home {
+    display: block;
+}
+.big-push {
+    height: 270px;
+}

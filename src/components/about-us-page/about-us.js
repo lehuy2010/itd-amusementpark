@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React from 'react';
 import {Avatar, Row, Col, Layout, Divider} from 'antd'
-import PersonalData from '../AboutUs-Page/personal-info'
+import PersonalData from './personal-info'
 // const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 
 const AboutUs = () => {
@@ -30,7 +30,7 @@ const AboutUs = () => {
                                         align = 'left'
                                         shape = 'square'
                                         size={240}
-                                        src={require('D:/Study Documents/ticket-temp/src/image/Avatar/' + data.coverPhoto)}
+                                        src={require('./images/' + data.coverPhoto)}
                                         key={index}
                                         style={{
                                             margin: '30px',

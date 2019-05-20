@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../App.css'
+import './App.css'
 import {Icon, Table, Spin, Button} from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -69,7 +69,7 @@ class PriceTable extends Component {
             
         ]
         return (
-            <div style = {{margin: '30px', marginLeft: '60px', marginRight: '60px'}}>
+            <div className = 'icon-styling'>
                { this.state.isLoading ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
                 <Spin
                     indicator = {loadingIcon}
