@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {Card, Col} from 'antd'
-import { Route, Link } from "react-router-dom";
+import {Card, Col, Button} from 'antd'
+import { Route, Link, Redirect } from "react-router-dom";
 import GameDetails from './game-card-detail'
 const {Meta} = Card
 
@@ -11,41 +11,42 @@ class GameCard extends Component {
         super(props) 
         this.state = {
         }
-
-     this.showGameCard = this.showGameCard.bind(this)
-     
     }
-    handleClick = () => {
+    handleClick = (e) => {
         console.log('vừa click');
         console.log(this.props.gameType)
         console.log(this.props.ticketID);
+        const {ticketID} = this.props;
+        // return (
+        //     <Link to = {`/games/${this.props.ticketID}`} ></Link> 
+        // )
+         
     }
 
-    showGameCard() {
-        return (
-        <Col span = {6} >
-            <Card
-            hoverable
-            style = {{width: '100%', textAlign: 'center', marginTop: '16px'}}
-            cover = {
-            <img alt = '' src = {require('./images/'+ this.props.coverImage)} 
-            style = {{height: '300px', width: '316px'}} />}
-            onClick = {this.handleClick}
-            >
-            <Meta 
-                title = {this.props.gameType}
-                style = {{marginTop: 30,
-                 marginBottom : 20,}}
-            />
-            <Link to = '/some:id'></Link>
-            </Card>
-        </Col>
-        )
-    }
+    
 
     render() {
-        return (
-            this.showGameCard(this.props.gameType, this.props.coverImage, this.props.ticketID)
+        return ( 
+
+        <Col span = {6} >
+        <Link to = {`/games/${this.props.ticketID}`} >
+        <Card
+                    hoverable
+                    style = {{width: '100%', textAlign: 'center', marginTop: '16px'}}
+                    cover = {
+                    <img alt = '' src = {require('./images/'+ this.props.coverImage)} 
+                    style = {{height: '300px', width: '316px'}} />}
+                    >
+                    <Meta 
+                        title = {this.props.gameType}
+                        style = {{marginTop: 30,
+                        marginBottom : 20,}}
+                    />
+                    
+        </Card>
+        </Link>
+        </Col>
+           
         )
     }
 }

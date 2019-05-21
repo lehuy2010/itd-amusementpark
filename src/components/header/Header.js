@@ -9,15 +9,17 @@ class PageHeader extends Component {
     render() {
         return (
 
-            <Layout>
-                <Header style={{ position: "fixed", zIndex: 1, width: '100%'}}>
+            <Layout theme = 'light'>
+                <Header 
+                style={{ position: "fixed", zIndex: 1, width: '100%'}}>
                         <Menu
-                            theme="dark"
+                            theme = 'dark'
                             mode="horizontal"
                             style={{ lineHeight: '64px', fontSize: 15 }}
+                            defaultSelectedKeys={["keyHome"]}
                         >
 
-                        <Menu.Item key="keyHome" defaultSelectedKeys="keyHome" >
+                        <Menu.Item key="keyHome" >
                             <Link to = "/" > Trang chủ </Link>
                         </Menu.Item>
                         <Menu.Item key="keyIntroduction" >

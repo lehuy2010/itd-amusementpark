@@ -53,6 +53,7 @@ class Content extends Component {
                                         <GameCard gameType={content.TicketTypeName}
                                             coverImage={content.ImageURL}
                                             ticketID = {content.TicketTypeID}
+                                            description = {content.Description}
                                             key={index}
                                         /> :null
                                     )

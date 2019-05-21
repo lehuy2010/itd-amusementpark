@@ -1,15 +1,50 @@
 import React, { Component } from 'react'
-
-
+import axios from 'axios'
+import { Typography } from 'antd'
+import ImageDisplay from './image-component';
+import { Redirect } from 'react-router-dom'
+const { Title } = Typography
 class GameDetails extends Component {
-
+    constructor (props) {
+        super(props)
+        this.state = { 
+            gameName: '',
+            gameImage: '',
+            gameDesc: '',
+            isLoading: true
+        }
+    }
+    componentDidMount () {
+        const theID = parseInt(this.props.match.params.id)
+        axios.post(`http://localhost:4000/home/game`, {
+                id: theID
+        }).then(res => {
+            this.setState({ 
+                gameName: res.data[0].TicketTypeName,
+                gameImage: res.data[0].ImageURL,
+                gameDesc: res.data[0].Description,
+                isLoading: false
+            })
+            console.log(res.data[0])
+        }).catch(err => {
+            console.log(err);
+        })
+    }
     render() {
-        console.log(this.props)
-    
+    document.title = this.state.gameName
     return (
-            <div>
-            SOME CONTENT HERE AND THE PROPS IS 
+        <div style={{ margin: '200px',textAlign: 'center' }}>
+            <Title style={{ color: '#389e0d', marginTop: 10 }}>
+                {this.state.gameName}
+            </Title>
+            {this.state.isLoading ? "đang load nè " :
+             <ImageDisplay imgURL = {this.state.gameImage} />
+             }
+            
+            <div style = {{ marginTop: '60px'}}>
+               <h2><p>{this.state.gameDesc}</p></h2> 
             </div>
+        </div>  
     )
 }
 }

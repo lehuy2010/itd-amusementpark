@@ -31,7 +31,7 @@ const TicketInfo = () => {
                 >   Quí khách mua vé online KHÔNG cần mua vé cho các bé dưới 1m. Khi đến quầy để lấy vé chỉ cần dẫn bé đi kèm</Text>
             </Paragraph>
             <Paragraph> 
-                *Ấn vào nút <Icon type="plus-square" /> để xem mô tả của vé '
+                *Ấn vào nút <Icon type="plus-square" /> để xem mô tả của vé 
             </Paragraph>
         </Typography>
     )

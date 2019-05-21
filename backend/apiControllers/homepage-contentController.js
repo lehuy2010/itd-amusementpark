@@ -10,4 +10,16 @@ router.get('/', (req,res) => {
         res.statusCode = 500;
     })
 })
+
+router.post('/game', (req,res) => {
+    console.log('test: ', req.body.id)
+    homepagecontentRepo.loadCardsById(req.body.id)
+    .then(rows => {
+        res.json(rows)
+        console.log(rows)
+    }).catch(err => {
+        console.log(err);
+        res.statusCode = 500;
+    })
+})
 module.exports = router;

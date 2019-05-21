@@ -5,23 +5,16 @@ var express = require('express'),
 
 var ticketCtrl = require('./apiControllers/ticketController');
 var homepageCtrl = require('./apiControllers/homepage-contentController');
-
+// var gamecardCtrl = require ('./apiControllers/gamecardController');
 var app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.json({
-        msg: 'hello from nodejs express api'
-        
-    })
-});
-
 
 app.use('/ticket',ticketCtrl);
 app.use('/home',homepageCtrl);
-
+// app.use('/games', gamecardCtrl);
 var port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`đồ án tốt nghiệp trên port ${port}`);

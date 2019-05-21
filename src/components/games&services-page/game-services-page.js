@@ -25,6 +25,7 @@ class GamesServices extends Component {
             console.log('thất bại');    
         })
     document.title = 'Trò chơi & dịch vụ'
+    
     }
 
     render() {
@@ -46,6 +47,7 @@ class GamesServices extends Component {
                                 <GameCard gameType={content.TicketTypeName}
                                     coverImage={content.ImageURL}
                                     ticketID = {content.TicketTypeID}
+                                    description = {content.Description}
                                     key={index}
                                 /> : null
                                 
