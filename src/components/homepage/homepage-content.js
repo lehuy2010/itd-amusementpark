@@ -4,12 +4,14 @@ import './App.css';
 import {Divider, Typography, Row} from 'antd';
 import GameCard from '../games-card-component/game-cards'
 import axios from 'axios';
+import LoadingIcon from '../loading-icon/LoadingIcon'
 const {Title } = Typography
 class Content extends Component { 
     constructor (props) {
         super(props) 
         this.state = { 
-            gamesInformation: []
+            gamesInformation: [],
+            isLoading: true
     
         }
     }
@@ -18,10 +20,11 @@ class Content extends Component {
         axios.get(`http://localhost:4000/home`)
         .then(response => {
             this.setState({ 
-                gamesInformation: response.data
+                gamesInformation: response.data,
+                isLoading: false
             })
         }).catch(err => {
-            console.log('thất bại');    
+            console.log(err);    
         })
     }
     render () {
@@ -47,6 +50,7 @@ class Content extends Component {
                     <div style={{ padding: '10px' }}>
                         <Row gutter={20} >
                             {
+                                this.state.isLoading ? <LoadingIcon /> : 
                                 this.state.gamesInformation.map((content, index) => {
                                     return (
                                         content.IsUsed == true ?

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {Icon, Spin, Row, Divider} from 'antd'
 import axios from 'axios'
 import GameCard from '../games-card-component/game-cards'
-const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
+import LoadingIcon from '../loading-icon/LoadingIcon';
 class GamesServices extends Component { 
     constructor(props) {
         super(props)
@@ -35,9 +35,7 @@ class GamesServices extends Component {
                 <Divider orientation = "left"
                 style = {{fontSize: '36px'}} >Các trò chơi </Divider>
                 {this.state.isLoading ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                    <Spin
-                        indicator = {loadingIcon}
-                    />
+                    <LoadingIcon />
                 </div>  :
                 <Row gutter={16} >
                     {

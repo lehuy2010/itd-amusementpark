@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Switch, Route,Router, Link} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { Layout, Menu, Icon} from 'antd';
 
 const {
@@ -49,7 +49,7 @@ class PageHeader extends Component {
                             style = {{position: 'relative', marginLeft: '500px' }}                        
                             key="keyAdmin" >
                             <Icon type="user" style = {{fontSize: '28px', marginLeft: '10px'}}/>
-                            <Link to = "/prices" ></Link>
+                            <Link to = "/login" ></Link>
                         </Menu.Item>
                         </Menu>
                         

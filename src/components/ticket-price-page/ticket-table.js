@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import './App.css'
-import {Icon, Table, Spin, Button} from 'antd';
+import {Table, Button} from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
+import LoadingIcon from '../loading-icon/LoadingIcon';
 class PriceTable extends Component {
     constructor(props){
         super(props);
@@ -19,7 +19,7 @@ class PriceTable extends Component {
         axios.get(`http://localhost:4000/ticket/prices`)
         .then(response => {
             console.log('kết quả là :', response.data)
-            response.data.map(content => {
+            response.data.array.forEach(content => {
                 if (content.childUsed === false) {
                     content.childGia = 'Không áp dụng';
                 }
@@ -71,9 +71,7 @@ class PriceTable extends Component {
         return (
             <div className = 'icon-styling'>
                { this.state.isLoading ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                <Spin
-                    indicator = {loadingIcon}
-                />
+                <LoadingIcon />
         </div> :
             <Table
             columns = {columns}

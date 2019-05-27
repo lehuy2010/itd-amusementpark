@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { Typography } from 'antd'
 import ImageDisplay from './image-component';
-import { Redirect } from 'react-router-dom'
+// import { Redirect } from 'react-router-dom'
+import LoadingIcon from '../loading-icon/LoadingIcon'
 const { Title } = Typography
 class GameDetails extends Component {
     constructor (props) {
@@ -25,7 +26,6 @@ class GameDetails extends Component {
                 gameDesc: res.data[0].Description,
                 isLoading: false
             })
-            console.log(res.data[0])
         }).catch(err => {
             console.log(err);
         })
@@ -37,7 +37,9 @@ class GameDetails extends Component {
             <Title style={{ color: '#389e0d', marginTop: 10 }}>
                 {this.state.gameName}
             </Title>
-            {this.state.isLoading ? "đang load nè " :
+            {this.state.isLoading ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                    <LoadingIcon />
+                </div>  :
              <ImageDisplay imgURL = {this.state.gameImage} />
              }
             

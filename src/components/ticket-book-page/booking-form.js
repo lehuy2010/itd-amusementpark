@@ -122,9 +122,14 @@ class BookForm extends Component {
         })
     }
     handleNumberChange = (value) => {
-       // console.log("số đổi thành : " + value );
-        if( value === null || value === '')
-        value = 0;
+        // if( value == null || value == '')
+        // {
+        //     value = 1;
+        // }
+        
+        console.log("số đổi thành : " + value );
+       //console.log('số:', event.target.value)
+        
         this.setState ({
             ticketNumber : value
         })
@@ -133,6 +138,7 @@ class BookForm extends Component {
 
     handlePrice = () => {
         
+        console.log()
         var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
             return index !== null && index !== undefined
         });
@@ -277,10 +283,9 @@ class BookForm extends Component {
                 )}
                 {getFieldDecorator(`ticketFieldAmount[${k}]`, {
                     validateTrigger: ['onBlur'],
+                    initialValue: 1,
                     rules: [{
-                        required: true,
-                        message: "Vui lòng chọn số lượng vé",
-                        min: 1, message: "Số lượng vé ít nhất là 1"
+                        required: true, message: <div><br/>Vui lòng chọn số lượng vé</div>
                     }]
                 })(
                     <InputNumber

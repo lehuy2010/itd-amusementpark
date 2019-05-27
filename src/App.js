@@ -12,18 +12,20 @@ import AboutUs from './components/about-us-page/about-us';
 import PriceTable from './components/ticket-price-page/ticket-price';
 import GameDetails from './components/games-card-component/game-card-detail';
 import NotFound from './components/error-page/notfound';
+import AdminLoginForm from './components/administrator-page/admin-login-form';
 import AdminLayout from './components/administrator-page/admin-layout';
+
 class App extends Component {
   render() {
     return (
       <Router>
         <div>
-        {/* <Switch>
-          <Route exact path = "/admin" component = {AdminLayout} />
-        </Switch> */}
+
         <PageHeader />
         <div className='push'> </div>
         <Switch>
+            <Route exact path = "/admin" component = {AdminLayout} />
+            <Route exact path = "/login" component = {AdminLoginForm} />
             <Route exact path="/" component={Homepage} />
             <Route exact path="/book" component={BookForm} />
             <Route exact path="/introduction" component={Introduction} />
@@ -35,7 +37,6 @@ class App extends Component {
             <Route path="/games/:id" component={GameDetails} />
             <Route component = {NotFound} />
         </Switch>
-        
         <div className="push"></div>
         <PageFooter />
       </div>

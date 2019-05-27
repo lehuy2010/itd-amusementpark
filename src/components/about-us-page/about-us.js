@@ -2,7 +2,6 @@
 import React from 'react';
 import {Avatar, Row, Col, Layout, Divider} from 'antd'
 import PersonalData from './personal-info'
-// const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 
 const AboutUs = () => {
         document.title = 'Về chúng tôi'

@@ -176,7 +176,7 @@ router.post('/send', async (req,res) => {
     // console.log('sdt: ', info.phoneInput)
     // console.log('ngày mua: ', moment(info.ticketDate).format('DD-MM-YYYY'));
     // console.log('ngày kế tiếp là: ', nextDay);
-    
+    console.log("TẠI SAO UNDEFINED ?", information.ticketNumber);
     information.ticketNumber.map(function(data, index) {
         return (
             
@@ -198,7 +198,7 @@ router.post('/send', async (req,res) => {
       let info = await transporter.sendMail({
         from: '"Huy Nguyễn Lê" <nguyenlehuy1101@gmail.com>', // sender address
         to: req.body.params.customerEmail, // list of receivers
-        subject: "MÃ QRCODE CHO VÉ KHU VUI CHƠI ITD AMUSEMENT PARK", // Subject line
+        subject: "THÔNG TIN VỀ CÁC VÉ ĐÃ ĐẶT TẠI KHU VUI CHƠI ITD AMUSEMENT PARK", // Subject line
         text: "text nguyễn lê huy", // plain text body
         html:  `
         <p>Cảm ơn bạn đã mua vé tại khu vui chơi iTD Amusement Park </p>
@@ -216,6 +216,7 @@ router.post('/send', async (req,res) => {
                 })}
                 
                 Tổng cộng: <b>${information.ticketPriceSum.toLocaleString('vi-vn')} đồng</b>
+                
     `
       });
     
