@@ -5,7 +5,7 @@ const Contact = () => {
         return (
             <div style = {{
                 marginTop: '100px',
-                marginBottom: '145px',
+                marginBottom: '220px',
                 fontSize : '28px',
                 textAlign: 'center'
             }}>

@@ -17,7 +17,6 @@ class PageFooter extends Component {
         return (
             <Layout >
                 <Footer className='footer-modify'>
-
                     <a href={socialMediaData.twitter.link} target="_blank" rel="noopener noreferrer">
                         <Icon type={socialMediaData.twitter.type}
                             className='icon-modifier' />

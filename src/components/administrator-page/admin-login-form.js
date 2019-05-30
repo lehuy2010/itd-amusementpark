@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import './App.css';
-import { Form, Icon, Input, Button, Row, Col, Typography } from 'antd';
+import { Form, Icon, Input, Button, Row, Col, Typography, Alert } from 'antd';
 import  { Redirect } from 'react-router-dom';
 const {Text} = Typography;
 
@@ -12,7 +12,8 @@ class AdminLoginForm extends Component {
             Username: '',
             Password: '',
             loginAlert: '', // dùng để hiện ra dòng thông báo khi sách nhập sai tài khoản/mật khẩu
-            isLogged: false
+            isLogged: false,
+            adminInfo: {}
         }
     }
   handleSubmit = e => {
@@ -29,15 +30,18 @@ class AdminLoginForm extends Component {
                params: this.state
            })
            .then(res => {
-               console.log('đăng nhập thành công')
+               console.log('đăng nhập thành công', res.data)
                this.setState({
-                   isLogged: true
+                   isLogged: true,
+                   adminInfo: res.data
                })
            }).catch(err => { 
-            if(err.response.status === 404)
-            this.setState({
-                loginAlert: err.response.data
-            })
+               console.log('lỗi:',JSON.stringify(err));
+                if(err.response.status === 404){
+                    this.setState({
+                    loginAlert: err.response.data
+                })
+                }
            })
         })
       }
@@ -47,13 +51,21 @@ class AdminLoginForm extends Component {
     render() {
         const { isLogged } = this.state;
         if(isLogged ) { 
-            return <Redirect to = "/admin" />
-        } 
+            return <Redirect 
+            to = {{
+                pathname: "/admin", 
+                state: {
+                    info: this.state.adminInfo
+                }
+                }}
+             />
+        }
+        document.title = 'Quản trị'
+        console.log('thông điệp: ',this.props.location.state); 
         const { getFieldDecorator } = this.props.form;
         return (
             <div className = 'layout'>
                 <Row>
-                    
                     <Col offset={8} span={8}>
                     <p align = 'center'
                         style = {{color: '#389e0d', fontSize: '24px'}}
@@ -87,6 +99,13 @@ class AdminLoginForm extends Component {
                                 <Button type="primary" htmlType="submit" className="login-form-button">
                                     Log in </Button>
                             </Form.Item>
+                            {this.props.location.state !== undefined ? 
+                            <Alert message = {this.props.location.state.loginMessage}
+                            type = "error"
+                            showIcon 
+                            closable
+                            />  : null
+                            }
                             <Text type = "danger"> {this.state.loginAlert} </Text>
                         </Form>
                     </Col>

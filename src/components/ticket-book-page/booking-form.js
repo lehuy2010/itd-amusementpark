@@ -95,6 +95,7 @@ class BookForm extends Component {
 
     handleChange = (event) => {
         const {name, value} = event.target 
+        console.log('khi thay đổi', name, [name], value)
         this.setState({
             [name]: value 
         })
@@ -230,10 +231,6 @@ class BookForm extends Component {
         this.setState({
             ticketDate: newDate
         })
-    }
-
-    applyPromotion = (type) => {
-        
     }
 
     disableDate = (current) => {

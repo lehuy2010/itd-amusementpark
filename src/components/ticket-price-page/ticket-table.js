@@ -19,7 +19,7 @@ class PriceTable extends Component {
         axios.get(`http://localhost:4000/ticket/prices`)
         .then(response => {
             console.log('kết quả là :', response.data)
-            response.data.array.forEach(content => {
+            response.data.forEach(content => {
                 if (content.childUsed === false) {
                     content.childGia = 'Không áp dụng';
                 }

@@ -37,7 +37,6 @@ class App extends Component {
             <Route path="/games/:id" component={GameDetails} />
             <Route component = {NotFound} />
         </Switch>
-        <div className="push"></div>
         <PageFooter />
       </div>
       </Router>
