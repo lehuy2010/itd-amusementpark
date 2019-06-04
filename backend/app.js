@@ -11,7 +11,9 @@ var app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cors());
-
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
 
 app.use('/ticket',ticketCtrl);
 app.use('/home',homepageCtrl);
