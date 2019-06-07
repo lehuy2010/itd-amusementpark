@@ -3,33 +3,40 @@ import { Layout } from 'antd';
 import AdminSider from './admin-siderbar';
 import AdminLoginForm from './admin-login-form';
 import AdminContent from './admin-content';
-import { Redirect } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import axios from 'axios'
+import LoadingIcon from '../loading-icon/LoadingIcon';
+import UserInformation from './user-information';
+const { Content } = Layout;
 class AdminLayout extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
+        }
+    }
+    componentDidMount () { 
+        const token = localStorage.getItem('access-token');
+        
+        if (!token){
+            this.props.history.push('/login');
         }
     }
 
     render() {
-        console.log('tại admin layout: ',this.props.location.state.info);
+        
         return (
-            this.props.location.state !== undefined ? 
+            
             <Layout style={{ minHeight: '100vh', marginTop: '14px' }}>
                 <AdminSider />
-                <Layout>
-                    <AdminContent  data = {this.props.location.state.info } />
-                </Layout>
-            </Layout> : <Redirect 
-            to = {{
-                pathname: '/login',
-                state: {
-                    loginMessage: 'Bạn chưa đăng nhập!'
-                }
-                }} />
+                <Content style={{ margin: '0 16px' }}>
+                    <div style={{ margin: '40px' }}>
+                        {this.props.children}
+                    </div>
+                </Content>
+            </Layout> 
+            
         )
     }
 }
 
-export default AdminLayout
+export default withRouter(AdminLayout)

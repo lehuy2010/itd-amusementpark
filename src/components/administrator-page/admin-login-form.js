@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import './App.css';
 import { Form, Icon, Input, Button, Row, Col, Typography, Alert } from 'antd';
-import  { Redirect } from 'react-router-dom';
+import  { withRouter } from 'react-router-dom';
 const {Text} = Typography;
 
 class AdminLoginForm extends Component {
@@ -16,52 +16,42 @@ class AdminLoginForm extends Component {
             adminInfo: {}
         }
     }
+
+    
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Username và password: ', values);
-
         this.setState({ 
             Username: values.username,
             Password: values.password
         }, () => {
-            axios.post(`http://localhost:4000/admin`, {
-               params: this.state
+            axios.post(`http://localhost:4000/admin/login`, {
+               password: this.state.Password,
+               username: this.state.Username
            })
-           .then(res => {
-               console.log('đăng nhập thành công', res.data)
-               this.setState({
-                   isLogged: true,
-                   adminInfo: res.data
-               })
-           }).catch(err => { 
-               console.log('lỗi:',JSON.stringify(err));
-                if(err.response.status === 404){
-                    this.setState({
-                    loginAlert: err.response.data
-                })
-                }
-           })
-        })
-      }
-    });
-  };
-
-    render() {
-        const { isLogged } = this.state;
-        if(isLogged ) { 
-            return <Redirect 
-            to = {{
-                pathname: "/admin", 
+           .then(response => {
+               console.log('đăng nhập thành công', response.data)
+               localStorage.setItem('access-token', response.data.token);
+            this.props.history.push({
+                pathname: '/user',
                 state: {
-                    info: this.state.adminInfo
+                    user: response.data.user[0]
                 }
-                }}
-             />
-        }
+            });
+           }).catch(err => {
+               console.log('lỗi:',err.response.data.error);
+                    this.setState({
+                    loginAlert: err.response.data.error
+                })
+        })
+      })
+    };
+  });
+  }
+    render() {
         document.title = 'Quản trị'
-        console.log('thông điệp: ',this.props.location.state); 
         const { getFieldDecorator } = this.props.form;
         return (
             <div className = 'layout'>

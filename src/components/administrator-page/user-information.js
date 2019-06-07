@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import { Typography, Input, Button, Icon, Modal } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 import LoadingIcon from '../loading-icon/LoadingIcon'
 const { Paragraph } = Typography
+
 class UserInformation extends Component {
     constructor(props) {
         super(props) 
@@ -17,19 +19,27 @@ class UserInformation extends Component {
         }
     }
     componentDidMount() {
+        document.title = 'Thông tin cá nhân'
+        const token = localStorage.getItem('access-token');
+        if (!token) {
+            this.history.push('/login');
+        }
+
+        console.log('mới vào thì user truyền qua: ',this.props.location.state.user);
         this.setState({
-            userInfo: this.props.info[0],
+            userInfo: this.props.location.state.user,
             isLoading: false
-        }, () => {
-            axios.get(`http://localhost:4000/admin/alluser`)
-                .then(response => {
-                    this.setState({
-                        allUserInfo: response.data            
-                    })
-                }).catch(err => {
-                    console.log('lỗi api tại client: ', err);
-                })
         })
+        // }, () => {
+        //     axios.get(`http://localhost:4000/admin/alluser`)
+        //         .then(response => {
+        //             this.setState({
+        //                 allUserInfo: response.data            
+        //             })
+        //         }).catch(err => {
+        //             console.log('lỗi api tại client: ', err);
+        //         })
+        // })
         
         //console.log('keyObj là : ', keyObj)
     }
@@ -60,7 +70,8 @@ class UserInformation extends Component {
                 [name]: value
             }
         }))
-    console.log('khi thay đổi :',this.state.userInfo, event.target.name)
+    console.log('khi thay đổi :',this.state.userInfo)
+    console.log('cái được thay đổi: ',event.target.name)
     }
 
     updateUser = () => { 
@@ -108,7 +119,7 @@ class UserInformation extends Component {
         Object.keys(this.state.userInfo).map((key, index) => {
             return (
                 key !== 'Password' ? 
-                    key == 'EmployeeID' || key == 'ModifyDate'  ? 
+                    key === 'ID' || key === 'Ngày chỉnh sửa cuối cùng'  ? 
                      <Input
                         name = {key}
                         disabled
@@ -120,7 +131,7 @@ class UserInformation extends Component {
                 :
                 <Input
                     name = {key}
-                    disabled = {this.state.isEditable }
+                    disabled = {this.state.isEditable}
                     addonBefore={this.handleLabelName(key)}
                     onChange = {this.onChangeInput}
                     key = {index}
@@ -164,5 +175,5 @@ class UserInformation extends Component {
     }
 }
 
-export default UserInformation
+export default withRouter(UserInformation)
 

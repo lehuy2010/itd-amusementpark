@@ -8,19 +8,31 @@ class AdminContent extends Component {
     constructor () { 
         super()
         this.state = { 
-            
+           
         }
     }
-
-    // componentDidMount () {
-    //     axios.get()
-    // }
+    componentDidMount() {
+        const token = localStorage.getItem('access-token');
+        axios.post('http://localhost:4000/admin/info',{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res =>  {
+            this.setState({
+                adminInfo: res.data
+            })
+        }).catch(err => {
+            localStorage.removeItem('access-token');
+            this.props.history.push('/login');
+        })
+    }
     render() {
         return (
             <Layout>
                     <Content style={{ margin: '0 16px' }}>
                         <div style = {{margin: '40px'}}>
-                            <UserInformation info = {this.props.data}/>
+                           <UserInformation />
                         </div>
                     </Content>
             </Layout>

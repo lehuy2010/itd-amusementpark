@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "staging": "itdamusementpark",
+    "default": "itdamusementpark"
+  }
+}
