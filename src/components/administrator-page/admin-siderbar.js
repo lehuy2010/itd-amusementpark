@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { Layout, Menu, Icon } from 'antd'
+import { Link,withRouter } from 'react-router-dom'
+
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 class AdminSider extends Component  {
@@ -8,6 +10,14 @@ class AdminSider extends Component  {
         this.state = { 
 
         }
+    }
+    logOut = () => { 
+        const token = localStorage.getItem('access-token')
+        if(token){
+            localStorage.removeItem('access-token');
+            
+        }
+        this.props.history.push('/login');
     }
     render() {
         return (
@@ -19,8 +29,10 @@ class AdminSider extends Component  {
                     mode="inline"
                     >
                         <Menu.Item key="personalInformation">
+                            <Link to = "/user" >
                             <Icon type="user" />
                             <span>Thông tin cá nhân</span>
+                            </Link>
                         </Menu.Item>
                         
                         <SubMenu
@@ -32,33 +44,23 @@ class AdminSider extends Component  {
                                 </span>
                             }
                         >
-                            <Menu.Item 
-                            key="homepage"
-                            >Trang chủ</Menu.Item>
+                            <Menu.Item key="homepage">
+                            <Link to = "/home-modify">Trang chủ</Link>
+                            </Menu.Item>
 
-                            <Menu.Item 
-                            key="introduction"
-                            >Giới thiệu</Menu.Item>
+                            <Menu.Item key="introduction">
+                            <Link to = "/introduction-modify"></Link>
+                            Giới thiệu</Menu.Item>
 
-                            <Menu.Item 
-                            key="game-service"
-                            >Trò chơi & dịch vụ</Menu.Item>
 
-                            <Menu.Item 
-                            key="contact"
-                            >Liên hệ</Menu.Item>
+                            <Menu.Item key="contact">
+                            <Link to = "/contact-modify"></Link>
+                            Liên hệ</Menu.Item>
 
-                            <Menu.Item 
-                            key="ticket-price"
-                            >Giá vé</Menu.Item>
+                            <Menu.Item key="ticket-price">
+                            <Link to = "/ticket-modify"></Link>
+                            Giá vé</Menu.Item>
 
-                            <Menu.Item 
-                            key="book-ticket"
-                            >Đặt vé Online</Menu.Item>
-
-                            <Menu.Item 
-                            key="about-us"
-                            >About Us</Menu.Item>
                         </SubMenu>
 
                         <SubMenu
@@ -70,12 +72,17 @@ class AdminSider extends Component  {
                                 </span>
                             }
                         >
-                            <Menu.Item key="addGame">Thêm trò chơi</Menu.Item>
+                            <Menu.Item key="addGame">
+                            <Link to = "/add-game"></Link>
+                                Thêm trò chơi
+                            </Menu.Item>
                             
                         </SubMenu>
-                        <Menu.Item key="9">
-                            <Icon type="file" />
-                            <span>File</span>
+                        <Menu.Item key="logout"
+                        onClick = {this.logOut}
+                        >
+                        <Icon type="logout" />
+                            <span>Đăng xuất</span>
                         </Menu.Item>
                     </Menu>
                 </Sider>
@@ -83,4 +90,4 @@ class AdminSider extends Component  {
     }
 }
 
-export default AdminSider 
+export default withRouter(AdminSider )

@@ -5,7 +5,7 @@ class ImageDisplay extends Component {
     render() {
     return (
         <div>
-            <img alt = '' src = {require('./images/' + this.props.imgURL)}
+            <img alt = '' src = {require('../../images/' + this.props.imgURL)}
             style = {{height: '300px', width: '316px'}} /> 
         </div>
     )

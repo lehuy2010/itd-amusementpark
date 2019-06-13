@@ -3,9 +3,10 @@ import moment from 'moment';
 import './App.css';
 import {
     Form, Input, Col,  Select,DatePicker, Row,
-    InputNumber,Button, Icon, Spin
+    InputNumber, Button, Icon, Spin, Modal
 } from 'antd';
 import axios from 'axios'
+import { withRouter } from 'react-router-dom'
 const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 /*eslint-disable */
 const { Option } = Select;
@@ -27,8 +28,9 @@ class BookForm extends Component {
             ticketNumber: [],   // dùng để lưu số lượng loại vé được chọn vào một chuỗi
             ticketType: [],     // dùng để lưu các loại vé được chọn vào một chuỗi
             Promotion: [],
-            selectedPromotionContent: "",  // nội dung ct khuyến mãi đang được chọn
+            selectedPromotionContent: null,  // nội dung ct khuyến mãi đang được chọn
             selectedPromotionID: 0,
+            isPromoApplied: false, // xem tiền của người dùng đã đủ điều kiện để được km chưa
             isPromotionEnable: true  // dùng để cho ng dùng chỉ được chọn trường promotion khi đã chọn trường vé 1 lần 
         }
     }
@@ -64,11 +66,10 @@ class BookForm extends Component {
     
     addTicketField = () => {
         const { form } = this.props;
-        // can use data-binding to get
+        
         const keys = form.getFieldValue('keys');
         const nextKeys = keys.concat(id++);
-        // can use data-binding to set
-        // important! notify form to detect changes
+        
         form.setFieldsValue({
           keys: nextKeys,
         });
@@ -76,15 +77,15 @@ class BookForm extends Component {
 
     removeTicketField = (k) => {
         const { form } = this.props;
-        // can use data-binding to get
+        
         const keys = form.getFieldValue('keys');
-        // We need at least one passenger
+       
         if (keys.length === 1) {
             return;
         }
         const newkey = keys.filter(key => key !== k)
         
-        // can use data-binding to set
+       
         form.setFieldsValue({
             keys: newkey,
         },() => { 
@@ -109,6 +110,7 @@ class BookForm extends Component {
 
     handlePromotionChange = (value) => {
         let selected = `${value}`
+        console.log('khuyến mãi tên', selected);
         this.handlePromotionContent(selected)
         this.setState ({ 
             selectedPromotionID: selected
@@ -123,23 +125,14 @@ class BookForm extends Component {
         })
     }
     handleNumberChange = (value) => {
-        // if( value == null || value == '')
-        // {
-        //     value = 1;
-        // }
-        
-        console.log("số đổi thành : " + value );
-       //console.log('số:', event.target.value)
-        
         this.setState ({
             ticketNumber : value
         })
-       
     }
 
     handlePrice = () => {
         
-        console.log()
+        
         var filteredTicketType = this.props.form.getFieldValue('ticketField').filter(index => {
             return index !== null && index !== undefined
         });
@@ -165,7 +158,7 @@ class BookForm extends Component {
             })
         }
 
-
+        console.log('mảng ticketnumber  :',filteredTicketNumber );
         axios.post(`http://localhost:4000/ticket/prices/total`,{
             selectedTickets: filteredTicketType,
             selectedAmount: filteredTicketNumber,
@@ -173,20 +166,16 @@ class BookForm extends Component {
             totalTicket: ticketsSum
         })
         .then (totalSum => {
-            console.log('Tổng cộng tiền vé lúc này: ',totalSum.data);
+            console.log('Tổng cộng tiền vé lúc này: ',totalSum.data.TongTienAllFields);
+            console.log('được khuyến mãi chưa ? ', totalSum.data.promoFlag);
             this.setState({
-                ticketPriceSum: totalSum.data
+                ticketPriceSum: totalSum.data.TongTienAllFields,
+                isPromoApplied: totalSum.data.promoFlag
             })
         }).catch(err => {
             console.log('Có lỗi: ',err);
         })
-        // console.log('bạn đã chọn promotion có id: ', this.state.selectedPromotionID);
-        // console.log('mảng vé', filteredTicketNumber)
-        // console.log('tổng số vé', ticketsSum)
-        // console.log('loại vé đã chọn là: ', this.state.ticketType);
-
-        } 
-        
+        }   
     }
     
     handleSubmit = (e) => {
@@ -213,16 +202,27 @@ class BookForm extends Component {
                         console.log(err);
                     })
                 })
-               
+               //ticketDate, customerName, phoneInput, ticketNumber, ticketType, ticketPriceSum
                 axios.post(`http://localhost:4000/ticket/send`, {
-                    params: this.state
+                    emailDate: this.state.ticketDate,
+                    emailName: this.state.customerName,
+                    emailLocation: this.state.customerEmail,
+                    emailPhone: this.state.phoneInput,
+                    emailTicketType: filteredTicketType,
+                    emailTicketNumber: filteredTicketNumber,
+                    emailTotal: this.state.ticketPriceSum,
+                    emailPromo: this.state.selectedPromotionContent,
+                    emailPromoApply: this.state.isPromoApplied,
                 }).then(res => {
                     console.log('Email đã được gửi');
+                    this.bookSuccess();
+                }).then(() => {
+                    this.props.form.resetFields();
+                    window.scrollTo(0,0);
                 }).catch(err => {
                     console.log(err);
                 })
             }
-            // LÀM PHẦN NHẢY RA THÔNG BÁO NỮA
         })
     }
 
@@ -238,7 +238,13 @@ class BookForm extends Component {
         let nextWeek =  moment().add(7,'days').format(dateFormat);
         return current && (current < moment(today, dateFormat) || current > moment(nextWeek, dateFormat));
     }
-     
+    
+    bookSuccess = () => { 
+        Modal.success({
+            title: 'Đặt vé thành công',
+            content: 'Hãy kiểm tra email của bạn về thông tin giao dịch',
+        })
+    }
    
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -498,4 +504,4 @@ class BookForm extends Component {
 
 }
 const WrappedBookForm = Form.create()(BookForm);
-export default WrappedBookForm
+export default withRouter(WrappedBookForm)

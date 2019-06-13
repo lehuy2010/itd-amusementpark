@@ -1,17 +1,5 @@
 var db = require ('../fn/mssql-db')
-var bcrypt = require('bcrypt');
 var moment = require('moment')
-
-
-// exports.verifyAdmin = entity => { 
-//     var selectHash = `select EmployeeID as ID, Password, EmployeeName as Name, Gender, 
-//     Birthday as N'Ngày Sinh', Phone as N'Số điện thoại', Address as N'Địa chỉ',
-//     ModifyDate as N'Ngày chỉnh sửa cuối cùng' from Employee where Account = '${entity.Username}'`;
-
-//     var newHash = `select EmployeeID, Password, EmployeeName, Gender, Birthday, Phone, Address,
-//     ModifyDate from Employee where Account = '${entity.Username}'`;
-//     return db.load(newHash)
-// }
 
 exports.getAdminInfo = entity => { 
     var newHash = `select EmployeeID, Password, EmployeeName, Gender, Birthday, Phone, Address,
@@ -24,5 +12,38 @@ exports.saveEmployeeInfo = (entity) => {
     var sql = `update Employee set EmployeeName = N'${entity.EmployeeName}', Birthday =  '${entity.Birthday}',
     Phone = '${entity.Phone}', Address = '${entity.Address}', ModifyDate = '${currentTime}' where EmployeeID = '${entity.EmployeeID}'`;
     console.log(sql);
+    return db.insert(sql);
+}
+
+exports.getTicketID = () => { 
+    var sql = `select top 1 TicketTypeID from TicketType order by TicketTypeID desc`;
+    return db.load(sql);
+}
+exports.addGame = (entity, latestID) => {
+    const code = 'TT0' + (latestID+1);
+    console.log('cái code: ',code);
+    var sql = `insert into TicketType (TicketTypeCode, TicketTypeName, Description, IsUsed, ImageURL)
+    values ('${code}', N'${entity.gameName}', N'${entity.gameNote}', '${true}', '${entity.gameImgName}')
+    `
+    return db.load(sql);
+}
+
+exports.addAdultTicket = (entity, latestID) => {
+    const adultTicket = 'Người lớn - ' + entity.gameName;
+    console.log('check tên vé người lớn: ', adultTicket)
+    var sql = `insert into Ticket (TicketName, CustomerTypeID, TicketTypeID, Price, Description, IsUsed)
+    values (N'${adultTicket}', '1', '${latestID}', '${entity.gameAdultPrice}',
+    N'${entity.gameNote}', '${true}')
+    `;
+    return db.insert(sql);
+}
+
+exports.addChildrenTicket = (entity, latestID) => {
+    const childrenTicket = 'Trẻ em - ' + entity.gameName;
+    console.log('check tên vé trẻ em: ', childrenTicket)
+    var sql = `insert into Ticket (TicketName, CustomerTypeID, TicketTypeID, Price, Description, IsUsed)
+    values (N'${childrenTicket}', '2', '${latestID}', '${entity.gameChildrenPrice}',
+    N'${entity.gameNote}', '${true}')
+    `;
     return db.insert(sql);
 }

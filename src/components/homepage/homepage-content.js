@@ -1,6 +1,8 @@
 /*eslint-disable */
 import React, { Component } from 'react';
 import './App.css';
+//import firebase from '../firebase.js'
+import firebase from 'firebase'
 import {Divider, Typography, Row} from 'antd';
 import GameCard from '../games-card-component/game-cards'
 import axios from 'axios';
@@ -11,8 +13,8 @@ class Content extends Component {
         super(props) 
         this.state = { 
             gamesInformation: [],
-            isLoading: true
-    
+            isLoading: true,
+            content: []
         }
     }
 
@@ -21,43 +23,53 @@ class Content extends Component {
         .then(response => {
             this.setState({ 
                 gamesInformation: response.data,
-                isLoading: false
             })
         }).catch(err => {
             console.log(err);    
+        })
+
+        var contentData = firebase.database().ref('homecontent');
+        contentData.on('value', (snapshot) => {
+            let line = snapshot.val();
+            this.setState({
+                content: line,
+                isLoading: false
+            })
         })
     }
     render () {
         return (
             <div>
+            {this.state.isLoading ? <LoadingIcon /> : 
                 <Typography align='center'>
+                    
                     <Title style={{ color: '#389e0d', marginTop: 10 }}
                     >
-                        KHU VUI CHƠI GIẢI TRÍ iTD
+                        {this.state.content.homepage_title_1}
                     </Title>
+
                     <h3 
                     style={{ marginTop: 2 }}
                     >
-                    Khu vui chơi giải trí đa dạng bậc nhất Việt Nam
+                        {this.state.content.homepage_title_2}
                     </h3>
 
-                    <p> Là nơi sẽ mang đến cho bạn và người thân, gia đình,bạn bè vô vàn niềm vui
-                        và kỉ niệm đáng nhớ 
+                    <p> {this.state.content.homepage_subtitle}
                     </p>
 
-                    <Divider > <h1>Các Hoạt Động Giải Trí</h1> </Divider>
-
+                    <Divider > <h1>{this.state.content.homepage_game_title}</h1> </Divider>
+                    
                     <div style={{ padding: '10px' }}>
                         <Row gutter={20} >
                             {
                                 this.state.isLoading ? <LoadingIcon /> : 
-                                this.state.gamesInformation.map((content, index) => {
+                                this.state.gamesInformation.map((data, index) => {
                                     return (
-                                        content.IsUsed == true ?
-                                        <GameCard gameType={content.TicketTypeName}
-                                            coverImage={content.ImageURL}
-                                            ticketID = {content.TicketTypeID}
-                                            description = {content.Description}
+                                        data.IsUsed == true ?
+                                        <GameCard gameType={data.TicketTypeName}
+                                            coverImage={data.ImageURL}
+                                            ticketID = {data.TicketTypeID}
+                                            description = {data.Description}
                                             key={index}
                                         /> :null
                                     )
@@ -67,7 +79,7 @@ class Content extends Component {
                     </div>
                     <Divider dashed />
                     <p>WE ARE IN THE END GAME NOW</p>
-                </Typography>
+                </Typography>}
             </div>
         )
     }

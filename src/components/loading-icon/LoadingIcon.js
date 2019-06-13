@@ -4,7 +4,7 @@ import { Icon, Spin } from 'antd'
 const LoadingIcon = () => { 
     const loading = <Icon 
     type="loading" 
-    style={{ fontSize: 48, marginLeft: '4px' }} 
+    style={{ fontSize: 48, marginLeft: '100px' }} 
     spin 
     />;
     return ( 

@@ -14,9 +14,12 @@ import GameDetails from './components/games-card-component/game-card-detail';
 import NotFound from './components/error-page/notfound';
 import AdminLoginForm from './components/administrator-page/admin-login-form';
 import AdminLayout from './components/administrator-page/admin-layout';
-import AdminContent from './components/administrator-page/admin-content';
 import UserInformation from './components/administrator-page/user-information';
-
+import HomepageModify from './components/administrator-page/homepage-modify';
+import IntroductionModify from './components/administrator-page/introduction-modify';
+import ContactModify from './components/administrator-page/contact-modify';
+import TicketModify from './components/administrator-page/ticket-modify';
+import AddGame from './components/administrator-page/add-game';
 class App extends Component {
   render() {
     return (
@@ -26,22 +29,31 @@ class App extends Component {
         <PageHeader />
         <div className='push'> </div>
         <Switch>
-            {/* <Route exact path = "/admin" component = {AdminLayout} /> */}
-            <Route exact path = "/login" component = {AdminLoginForm} />
-            <Route exact path="/" component={Homepage} />
             <Route exact path="/book" component={BookForm} />
+            <Route exact path="/" component={Homepage} />
+            <Route exact path="/login" component = {AdminLoginForm} />
             <Route exact path="/introduction" component={Introduction} />
             <Route exact path="/games" component={GamesServices} />
             <Route exact path="/contact" component={Contact} />
             <Route exact path="/about-us" component={AboutUs} />
             <Route exact path="/prices" component={PriceTable} />
-            <Route path="/games/:id" component={GameDetails} />
-            
+            <Route exact path="/games/:id" component={GameDetails} />
+
             <AdminLayout>
-              <Route exact path = "/user" component = {UserInformation} />
+              <Switch>
+                <Route exact path = "/user" component = {UserInformation} />
+                <Route exact path = "/home-modify" component = {HomepageModify} />
+                <Route exact path = "/introduction-modify" component = {IntroductionModify} />
+                <Route exact path = "/contact-modify" component = {ContactModify} />
+                <Route exact path = "/ticket-modify" component = {TicketModify} />
+                <Route exact path = "/add-game" component = {AddGame} />
+                <Route component = {NotFound} /> 
+              </Switch>
             </AdminLayout>
-            <Route component = {NotFound} />
+
+            <Route component = {NotFound} /> 
         </Switch>
+        
         <PageFooter />
       </div>
       </Router>

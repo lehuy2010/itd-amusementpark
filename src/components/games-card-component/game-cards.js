@@ -6,15 +6,8 @@ const {Meta} = Card
 class GameCard extends Component { 
     constructor(props) {
         super(props) 
-        this.state = {
-        }
+        
     }
-    handleClick = (e) => {
-        console.log('vừa click');
-        console.log(this.props.gameType)
-        console.log(this.props.ticketID);
-    }
-
     
 
     render() {
@@ -26,7 +19,7 @@ class GameCard extends Component {
                     hoverable
                     style = {{width: '100%', textAlign: 'center', marginTop: '16px'}}
                     cover = {
-                    <img alt = '' src = {require('./images/'+ this.props.coverImage)} 
+                    <img alt = '' src = {require('../../images/'+ this.props.coverImage)} 
                     style = {{height: '300px', width: '316px'}} />}
                     >
                     <Meta 

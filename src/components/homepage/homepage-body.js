@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import './App.css';
 import Slider from './homepage-slider'
 import Content from './homepage-content'
+import {withRouter} from 'react-router-dom'
 class Homepage extends Component {
     constructor() {
         super();
@@ -15,7 +16,6 @@ class Homepage extends Component {
     render() {
         return (
             <div>
-                
                 <Slider />
                 <div className = 'big-push'></div>
                 <Content />
@@ -25,4 +25,4 @@ class Homepage extends Component {
         )
     }
 }
-export default Homepage
+export default withRouter(Homepage)

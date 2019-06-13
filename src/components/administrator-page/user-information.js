@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Typography, Input, Button, Icon, Modal } from 'antd';
-import moment from 'moment';
+import { Input, Button, Icon, Modal } from 'antd';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import LoadingIcon from '../loading-icon/LoadingIcon'
-const { Paragraph } = Typography
+import moment from 'moment'
 
 class UserInformation extends Component {
     constructor(props) {
@@ -22,26 +21,25 @@ class UserInformation extends Component {
         document.title = 'Thông tin cá nhân'
         const token = localStorage.getItem('access-token');
         if (!token) {
-            this.history.push('/login');
+            this.props.history.push('/login');
         }
-
-        console.log('mới vào thì user truyền qua: ',this.props.location.state.user);
-        this.setState({
-            userInfo: this.props.location.state.user,
-            isLoading: false
-        })
-        // }, () => {
-        //     axios.get(`http://localhost:4000/admin/alluser`)
-        //         .then(response => {
-        //             this.setState({
-        //                 allUserInfo: response.data            
-        //             })
-        //         }).catch(err => {
-        //             console.log('lỗi api tại client: ', err);
-        //         })
-        // })
         
-        //console.log('keyObj là : ', keyObj)
+        axios.post(`http://localhost:4000/admin/info`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => { 
+            console.log('token này ok!', res.data.sentData[0]);
+            
+            this.setState({
+                userInfo: res.data.sentData[0],
+                isLoading: false
+            })
+        }).catch(err => {
+            console.log('token này hết hạn rồi! ', err)
+            this.props.history.push('/login');
+        })
+
     }
     
     handleLabelName = (labelName) => { 
@@ -78,13 +76,11 @@ class UserInformation extends Component {
         axios.post(`http://localhost:4000/admin/saveuser`, {
         params: this.state.userInfo
         }).then(response => {
-            this.saveSuccess();
             this.hideConfirm();
-        }).then(() => {
-            this.toggle();
-
+            this.saveSuccess();
         }).catch(err => { 
             console.log(err)
+            this.saveError();
         })
     }
 
@@ -110,8 +106,13 @@ class UserInformation extends Component {
 
     saveSuccess = () => {
         Modal.success({
-            title: 'Lưu thông tin thành công'
+            title: 'Lưu thông tin thành công. Vui lòng đăng nhập lại',
+            onOk() {
+                localStorage.removeItem('access-token');
+                
+            }
         });
+        
     }
 
     render(){ 
@@ -119,7 +120,7 @@ class UserInformation extends Component {
         Object.keys(this.state.userInfo).map((key, index) => {
             return (
                 key !== 'Password' ? 
-                    key === 'ID' || key === 'Ngày chỉnh sửa cuối cùng'  ? 
+                    key === 'EmployeeID' || key === 'ModifyDate'  ? 
                      <Input
                         name = {key}
                         disabled
@@ -129,7 +130,16 @@ class UserInformation extends Component {
                         defaultValue={this.state.userInfo[key] }
                         style = {{marginBottom: '8px', maxWidth: '80%'}} />
                 :
+                key === 'Birthday' ? 
                 <Input
+                    name = {key}
+                    disabled = {this.state.isEditable}
+                    addonBefore={this.handleLabelName(key)}
+                    onChange = {this.onChangeInput}
+                    key = {index}
+                    defaultValue={this.state.userInfo[key].toLocaleString('vi-vn')}
+                    style = {{marginBottom: '8px', maxWidth: '80%'}}
+                    /> :  <Input
                     name = {key}
                     disabled = {this.state.isEditable}
                     addonBefore={this.handleLabelName(key)}
@@ -145,19 +155,22 @@ class UserInformation extends Component {
         return (
             <div>
                       {user}
-                      <div style = {{textAlign: 'right'}}>
-                          <Button 
-                          type = "primary" 
-                          onClick = {this.toggle}
-                          style = {{marginRight: '10px'}}
-                          > 
-                            <Icon type="edit" /> 
-                          </Button>
-                        <Button 
-                        type = "primary"
-                        onClick = {this.showConfirm}
-                         >SAVE</Button>
-                      </div>
+                <div style={{ textAlign: 'right' }}>
+                    <Button
+                        type="primary"
+                        onClick={this.toggle}
+                        style={{ marginRight: '10px' }}
+                    >
+                        <Icon type="edit" />
+                    </Button>
+
+                    <Button
+                        type="primary"
+                        onClick={this.showConfirm}
+                    >
+                        SAVE
+                    </Button>
+                </div>
 
                       <Modal 
                       title = 'Xác nhận'

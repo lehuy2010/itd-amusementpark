@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Layout } from 'antd';
 import AdminSider from './admin-siderbar';
 import AdminLoginForm from './admin-login-form';
-import AdminContent from './admin-content';
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import LoadingIcon from '../loading-icon/LoadingIcon';

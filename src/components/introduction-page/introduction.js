@@ -2,16 +2,30 @@
 import React, {Component} from 'react'
 import './App.css'
 import { Typography, Timeline, Divider, Carousel  } from 'antd'
+import firebase from 'firebase'
+import LoadingIcon from '../loading-icon/LoadingIcon'
 const {Title} = Typography;
 
 class Introduction extends Component {
     constructor(props) { 
         super(props)
+        this.state = { 
+            introContent: [],
+            isLoading: true
+        }
 
     }
     componentDidMount() {
         document.title = 'Giới thiệu'
         window.scrollTo(0,0);
+        var firebaseInfo = firebase.database().ref('introductioncontent');
+        firebaseInfo.on('value', (snapshot) => { 
+            console.log('tại đây snapsohot: ', snapshot.val());
+            this.setState({
+                introContent: snapshot.val(),
+                isLoading: false
+            })
+        })
     }
     render () { 
         var settings = {
@@ -24,26 +38,22 @@ class Introduction extends Component {
           };
         return (
             <div>
-            <Typography align='center'>
-                <img src={require('./images/introduction-default.png')} alt = ""/>
-                <Title className='introduction-title'
-                >
-                    GIỚI THIỆU SƠ LƯỢC
-               </Title>
-                <p style = {{marginLeft: '320px', marginRight: '320px', marginBottom: '70px'}} >
-                Công ty Cổ Phần Du lịch Văn hóa Suối Tiên phôi thai là
-                một Lâm trại nuôi trăn và sản xuất hàng thủ công mỹ
-                nghệ do ông Đinh Văn Vui - một người con quê hương Sóc
-                Trăng bắt đầu xây dựng vào năm 1987. Lâm trại lúc
-                đầu chỉ có 6.600 m² đất hoang hóa, có con suối chảy qua
-                với huyền thoại 7 cô gái đồng trinh cùng tuổi Rồng quy
-                tiên tại dòng suối nên dân trong vùng gọi là Suối Tiên. </p>
-                <Divider><Title style={{ color: '#389e0d'}}
-                >
-                    LỊCH SỬ HÌNH THÀNH VÀ PHÁT TRIỂN
-               </Title></Divider>
-               
-            </Typography>
+                {this.state.isLoading ? <LoadingIcon /> : 
+                
+                        <Typography align='center'>
+                            <img src={require('./images/introduction-default.png')} alt="" />
+                            <Title className='introduction-title'
+                            >
+                               {this.state.introContent.introduction_title_1}
+                            </Title>
+                            <p style={{ marginLeft: '320px', marginRight: '320px', marginBottom: '70px' }} >
+                                {this.state.introContent.introduction_subtitle_1} </p>
+                            <Divider><Title style={{ color: '#389e0d' }}>
+                                {this.state.introContent.introduction_title_2}
+                            </Title></Divider>
+                        </Typography>
+                    
+                }
                 <div>
                     <Timeline style={{ marginLeft: '40%' }}>
 
@@ -60,9 +70,7 @@ class Introduction extends Component {
                                 Lịch Văn Hóa Suối Tiên chính thức mở cửa đón du khách từ mọi miền
                                 đến tham quan. 
                         </Timeline.Item>
-                    
                     </Timeline>
-
                 </div>
             <Carousel {...settings}
             style = {{

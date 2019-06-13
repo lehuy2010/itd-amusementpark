@@ -52,7 +52,7 @@ exports.findPrice = Type => {
 // SAU NÀY SẼ XỬ LÝ THÊM PHẦN ƯU ĐÃI => TOTALPRICE LÀ GIÁ ĐÃ ÁP DỤNG ƯU ĐÃI CỦA PRICE
 exports.transactionInsert = (AllTicketsPrice, phoneInput) => { 
     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss:SS")
-    var sql = `insert into Transactions( Price, TransactionDate, TotalPrice, Phone, PaymentStatus) values
+    var sql = `insert into Transactions(Price, TransactionDate, TotalPrice, Phone, PaymentStatus) values
     ('${AllTicketsPrice}','${currentTime}','${AllTicketsPrice}','${phoneInput}', 'False')`
     return db.insert(sql);
 }
@@ -77,11 +77,11 @@ exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, O
     var PseudoArrayToCreateQR =                 // mảng này là chưa có dòng code md5
         [`${TransIDNumber}-${Ordinal};${NewTicketType};${Entity.Date};${ExpireDate};${xoadau(Entity.Name)};${TicketPrice} VND`]
 
-    console.log('DÒNG CHƯA CÓ MD5: ' + PseudoArrayToCreateQR + '\n');
+    
 
     var EncodedPseudo = md5(PseudoArrayToCreateQR.toString())      // encode md5 nguyên dãy trên
 
-    console.log('DÒNG CÓ MD5: ' + EncodedPseudo + '\n');
+    
 
     TicketCodeArray = [PseudoArrayToCreateQR + ';' + EncodedPseudo + ';'];    // xong join 2 chuỗi lại
     
@@ -93,7 +93,7 @@ exports.detailTransactionInsert = (TransIDNumber, TicketIDNumber, TicketPrice, O
             '${TransIDNumber}', '${Ordinal}', '${TicketCodeArray}','${TicketIDNumber}','${TicketPrice}','${Entity.Date}','${ExpireDate}')
             `
 
-    console.log("++ TEST CÂU INSERT: " + TransDetailInsert_SQL);
+    
     db.insert(TransDetailInsert_SQL);
 
     //return Promise.resolve(TicketCodeArray)

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import './App.css';
 import { Form, Icon, Input, Button, Row, Col, Typography, Alert } from 'antd';
-import  { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
 const {Text} = Typography;
 
 class AdminLoginForm extends Component {
@@ -17,12 +17,27 @@ class AdminLoginForm extends Component {
         }
     }
 
-    
+    componentDidMount () {
+        const token = localStorage.getItem('access-token');
+        if (token !== null) {
+            axios.post(`http://localhost:4000/admin/authenticate`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res =>  {
+                console.log('ok')
+                this.props.history.push("/user");
+            }).catch(err => {
+                console.log('có lỗi!', err)
+            })
+        }
+       
+    }
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Username và password: ', values);
+        
         this.setState({ 
             Username: values.username,
             Password: values.password
@@ -32,14 +47,8 @@ class AdminLoginForm extends Component {
                username: this.state.Username
            })
            .then(response => {
-               console.log('đăng nhập thành công', response.data)
                localStorage.setItem('access-token', response.data.token);
-            this.props.history.push({
-                pathname: '/user',
-                state: {
-                    user: response.data.user[0]
-                }
-            });
+            this.props.history.push("/user");
            }).catch(err => {
                console.log('lỗi:',err.response.data.error);
                     this.setState({
@@ -108,4 +117,4 @@ class AdminLoginForm extends Component {
 
 const WrappedNormalLoginForm = Form.create()(AdminLoginForm);
 
-export default WrappedNormalLoginForm
+export default withRouter(WrappedNormalLoginForm)
