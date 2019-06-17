@@ -50,10 +50,10 @@ exports.findPrice = Type => {
 
 // HÀM NÀY CHỈ INSERT MỘT TRANSACTIONID VÀO BẢNG
 // SAU NÀY SẼ XỬ LÝ THÊM PHẦN ƯU ĐÃI => TOTALPRICE LÀ GIÁ ĐÃ ÁP DỤNG ƯU ĐÃI CỦA PRICE
-exports.transactionInsert = (AllTicketsPrice, phoneInput) => { 
+exports.transactionInsert = (OriginalPrice, PostPromoPrice, phoneInput) => { 
     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss:SS")
     var sql = `insert into Transactions(Price, TransactionDate, TotalPrice, Phone, PaymentStatus) values
-    ('${AllTicketsPrice}','${currentTime}','${AllTicketsPrice}','${phoneInput}', 'False')`
+    ('${OriginalPrice}','${currentTime}','${PostPromoPrice}','${phoneInput}', 'False')`
     return db.insert(sql);
 }
 exports.getTransactionID = () => {
@@ -116,3 +116,9 @@ exports.findPromotionDetail = PromoID => {          // tìm thông tin của ctr
     return db.load(sql);
 }
 
+exports.insertApplyPromo = (TransID, PromoID) => {
+    var sql = `insert into ApplyPromotion (TransactionID, Ordinal, PromotionID) values
+    ('${TransID}','${1}', '${PromoID}')
+    `;
+    return db.insert(sql);
+}

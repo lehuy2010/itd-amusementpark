@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { Layout } from 'antd';
 import AdminSider from './admin-siderbar';
-import AdminLoginForm from './admin-login-form';
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
-import LoadingIcon from '../loading-icon/LoadingIcon';
-import UserInformation from './user-information';
 const { Content } = Layout;
 class AdminLayout extends Component {
     constructor(props) {

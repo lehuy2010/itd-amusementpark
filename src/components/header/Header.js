@@ -12,7 +12,8 @@ class PageHeader extends Component {
             <Layout theme = 'light'>
                 <Header 
                 style={{ position: "fixed", zIndex: 1, width: '100%'}}>
-                        <Menu
+                <div>
+                <Menu
                             theme = 'dark'
                             mode="horizontal"
                             style={{ lineHeight: '64px', fontSize: 15 }}
@@ -46,12 +47,14 @@ class PageHeader extends Component {
                             <Link to =  "/about-us" > About Us </Link> 
                         </Menu.Item>
                         <Menu.Item    
-                            style = {{position: 'relative', marginLeft: '500px' }}                        
+                            style = {{position: 'absolute', top: '0', right: '0'}}    //luôn nằm ở góc phải trên                    
                             key="keyAdmin" >
                             <Icon type="user" style = {{fontSize: '28px', marginLeft: '10px'}}/>
                             <Link to = "/login" ></Link>
                         </Menu.Item>
                         </Menu>
+                </div>
+                       
                         
                 </Header>
             </Layout>

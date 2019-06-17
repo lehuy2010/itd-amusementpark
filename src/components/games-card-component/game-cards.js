@@ -1,15 +1,8 @@
 import React, { Component } from 'react'
 import {Card, Col} from 'antd'
 import {Link} from "react-router-dom";
-//import GameDetails from './game-card-detail'
 const {Meta} = Card
 class GameCard extends Component { 
-    constructor(props) {
-        super(props) 
-        
-    }
-    
-
     render() {
         return ( 
 

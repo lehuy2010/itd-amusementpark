@@ -7,6 +7,7 @@ import {
 } from 'antd';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
+import { number } from 'prop-types';
 const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 /*eslint-disable */
 const { Option } = Select;
@@ -23,6 +24,7 @@ class BookForm extends Component {
             customerID: "",
             ticketArray: [],    // biến này chỉ dùng để bỏ chuỗi loại vé vào rồi render ra màn hình   
             ticketPriceSum: 0,  // biến này dùng để hiển thị tổng số tiền các vé ra màn hình
+            ticketOriginalPrice: 0, // tổng tiền TRƯỚC khi áp dụng giảm giá
             ticketDate: moment(),
             ticketQR: [],
             ticketNumber: [],   // dùng để lưu số lượng loại vé được chọn vào một chuỗi
@@ -30,6 +32,7 @@ class BookForm extends Component {
             Promotion: [],
             selectedPromotionContent: null,  // nội dung ct khuyến mãi đang được chọn
             selectedPromotionID: 0,
+            promoAmount: 0,
             isPromoApplied: false, // xem tiền của người dùng đã đủ điều kiện để được km chưa
             isPromotionEnable: true  // dùng để cho ng dùng chỉ được chọn trường promotion khi đã chọn trường vé 1 lần 
         }
@@ -103,9 +106,9 @@ class BookForm extends Component {
     }
 
     handleSelect = (value) => {
-        this.setState ({
-            ticketType: value
-        })
+        
+        console.log('filter:', this.props.form.getFieldValue('ticketField'));
+        
     }
 
     handlePromotionChange = (value) => {
@@ -145,11 +148,12 @@ class BookForm extends Component {
         if (filteredTicketNumber != 0 ){     // ngăn trường hợp lỗi khi khách hàng vừa đến mục mua vé
             // bấm vào chọn loại vé => chưa đặt số lượng đã bấm ra
             // ngoài trigger onBlur => mảng rỗng không xài filter được => lỗi  
-
+            
         var ticketsSum = filteredTicketNumber.reduce((filteredTicketNumber, value) => {
             return parseInt(filteredTicketNumber) + parseInt(value)
         });
-
+        
+        console.log('tại đây state tickettype là: ', this.state.ticketType);
         if (filteredTicketNumber != null && filteredTicketType != null) // chỉ enable cho ng dùng
         // chọn mục promotion khi họ đã chọn cả tên vé và số lượng vé
         {
@@ -158,24 +162,31 @@ class BookForm extends Component {
             })
         }
 
-        console.log('mảng ticketnumber  :',filteredTicketNumber );
+        console.log('mảng ticketnumber  :',filteredTicketNumber, 'mảng vé tương ứng:', filteredTicketType);
+        var selectedTickets = filteredTicketType.map((data)=>{
+            return this.state.ticketArray.find((x, index)=> data === index)
+        })
+        
         axios.post(`http://localhost:4000/ticket/prices/total`,{
-            selectedTickets: filteredTicketType,
-            selectedAmount: filteredTicketNumber,
+            selectedTickets: selectedTickets,
+            Count: filteredTicketNumber,
             selectedPromoID: this.state.selectedPromotionID,
             totalTicket: ticketsSum
         })
         .then (totalSum => {
-            console.log('Tổng cộng tiền vé lúc này: ',totalSum.data.TongTienAllFields);
-            console.log('được khuyến mãi chưa ? ', totalSum.data.promoFlag);
+            // console.log('Tiền vé gốc lúc này: ',totalSum.data.OriginalPrice);
+            // console.log('Tiền vé đã giảm: ',totalSum.data.PostPromoPrice);
+            // console.log('được khuyến mãi chưa ? ', totalSum.data.promoFlag);
             this.setState({
-                ticketPriceSum: totalSum.data.TongTienAllFields,
-                isPromoApplied: totalSum.data.promoFlag
+                ticketOriginalPrice: totalSum.data.OriginalPrice,
+                ticketPriceSum: totalSum.data.PostPromoPrice,
+                isPromoApplied: totalSum.data.promoFlag,
+                promoAmount: totalSum.data.promoLimit
             })
         }).catch(err => {
             console.log('Có lỗi: ',err);
         })
-        }   
+    }
     }
     
     handleSubmit = (e) => {
@@ -190,14 +201,17 @@ class BookForm extends Component {
                 var filteredTicketNumber = this.props.form.getFieldValue('ticketFieldAmount').filter(index => {
                     return index !== null
                 });
-
+                
+                var selectedTickets = filteredTicketType.map((data)=>{
+                    return this.state.ticketArray.find((x, index)=> data === index)
+                })
                 
                 this.setState({
-                    ticketType: filteredTicketType,
                     ticketNumber: filteredTicketNumber
                 }, () => {
                     axios.post(`http://localhost:4000/ticket/submit`, {
-                        params: this.state
+                        params: this.state,
+                        selectedTickets,
                     }).catch(err => {
                         console.log(err);
                     })
@@ -208,7 +222,7 @@ class BookForm extends Component {
                     emailName: this.state.customerName,
                     emailLocation: this.state.customerEmail,
                     emailPhone: this.state.phoneInput,
-                    emailTicketType: filteredTicketType,
+                    emailTicketType: selectedTickets,
                     emailTicketNumber: filteredTicketNumber,
                     emailTotal: this.state.ticketPriceSum,
                     emailPromo: this.state.selectedPromotionContent,
@@ -260,6 +274,7 @@ class BookForm extends Component {
                 {getFieldDecorator(`ticketField[${k}]`, {
                     validateTrigger: ['onBlur'],
                     rules: [{
+                        type: 'number',
                         required: true,
                         whitespace: true,
                         message: "Vui lòng chọn loại vé bạn muốn mua",
@@ -276,7 +291,7 @@ class BookForm extends Component {
                             this.state.ticketArray.map((content, index) => {
                                 return (
                                     <Option
-                                        value={content.TicketName}
+                                        value={index}
                                         key={index}>
                                         {content.TicketName + ' (' + content.Price.toLocaleString('vi-vn') + 'đồng/vé)   '}
                                     </Option>
@@ -364,7 +379,7 @@ class BookForm extends Component {
                         <Form.Item
                             label="E-mail"
                             hasFeedback
-                            extra="Quý khách vui lòng nhập đúng email để có thể nhận được mã QR "
+                            extra="Quý khách vui lòng nhập đúng email để có thể nhận được thông tin xác nhận "
                         >
                         {getFieldDecorator('E-mail', {
                             rules: [{
@@ -389,7 +404,7 @@ class BookForm extends Component {
                             rules: [{
                                 initialValue: this.state.phoneInput,
                                 type: "string",
-                                max: 11, message: 'Số điện thoại chỉ tối đa 11 kí tự ' },
+                                max: 10, message: 'Số điện thoại chỉ tối đa 10 kí tự ' },
                                 {
                                     pattern: new RegExp("^[0-9]*$"),
                                     message: <div>Không đúng định dạng !</div>
@@ -480,15 +495,30 @@ class BookForm extends Component {
                             >
                                 Đặt vé
                             </Button>
+                            {this.state.ticketOriginalPrice !== 0 ? 
+                            <div>
                             
-                            <div className = 'ticket-price-area' >
-                              Tổng cộng: 
-                            {
-                                this.state.ticketPriceSum !== 0 ?
-                            <div style = {{color:'#f5222d', fontSize: 'x-large'}}>
-                        {this.state.ticketPriceSum.toLocaleString('vi-vn')} đồng </div> 
-                            : <div></div>} 
-                            </div>
+                                <p className = 'ticket-price-area'>
+                                <span className = 'ticket-align-left'>Tạm tính: </span>
+                                
+                                <span className = 'ticket-align-right'>{this.state.ticketOriginalPrice.toLocaleString('vi-vn')} đ</span>
+                                </p>
+                                <br/>
+                            
+                                <p className = 'ticket-price-area'>
+                                <span className = 'ticket-align-left'>Giảm giá: </span>
+                                <span className = 'ticket-align-right'> - {this.state.promoAmount.toLocaleString('vi-vn')} đ</span>
+                                </p>
+                                <br/>
+                            
+                                <p className = 'ticket-price-area'>
+                                <span className = 'ticket-align-left'>Thành tiền: </span>
+                                <span className = 'ticket-align-right' style = {{color: 'red'}}>  {this.state.ticketPriceSum.toLocaleString('vi-vn')} đ</span>
+                                </p>
+                                <br/>
+                            </div> : null
+                              }
+                            
                             
                         </Form.Item>
                         

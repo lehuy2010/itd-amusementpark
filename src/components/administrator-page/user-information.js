@@ -3,7 +3,6 @@ import { Input, Button, Icon, Modal } from 'antd';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import LoadingIcon from '../loading-icon/LoadingIcon'
-import moment from 'moment'
 
 class UserInformation extends Component {
     constructor(props) {

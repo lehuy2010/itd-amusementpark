@@ -31,8 +31,14 @@
 }
 
 .ticket-price-area {
-    text-align: left;
     color: #262626;
     font-size: x-large;
     margin-top: 10px;
+    
+}
+.ticket-align-right {
+    float: right
+}
+.ticket-align-left {
+    float: left
 }

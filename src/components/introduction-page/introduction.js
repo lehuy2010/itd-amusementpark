@@ -20,7 +20,6 @@ class Introduction extends Component {
         window.scrollTo(0,0);
         var firebaseInfo = firebase.database().ref('introductioncontent');
         firebaseInfo.on('value', (snapshot) => { 
-            console.log('tại đây snapsohot: ', snapshot.val());
             this.setState({
                 introContent: snapshot.val(),
                 isLoading: false
