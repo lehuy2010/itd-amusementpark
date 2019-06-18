@@ -26,7 +26,7 @@ class AdminLoginForm extends Component {
                 }
             }).then(res =>  {
                 console.log('ok')
-                this.props.history.push("/user");
+                this.props.history.push("admin/user");
             }).catch(err => {
                 console.log('có lỗi!', err)
             })
@@ -48,7 +48,7 @@ class AdminLoginForm extends Component {
            })
            .then(response => {
                localStorage.setItem('access-token', response.data.token);
-            this.props.history.push("/user");
+            this.props.history.push("/admin/user");
            }).catch(err => {
                console.log('lỗi:',err.response.data.error);
                     this.setState({

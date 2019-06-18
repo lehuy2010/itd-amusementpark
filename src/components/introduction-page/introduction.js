@@ -40,7 +40,7 @@ class Introduction extends Component {
                 {this.state.isLoading ? <LoadingIcon /> : 
                 
                         <Typography align='center'>
-                            <img src={require('./images/introduction-default.png')} alt="" />
+                            <img src={require('../../images/introduction-default.png')} alt="" />
                             <Title className='introduction-title'
                             >
                                {this.state.introContent.introduction_title_1}
@@ -81,31 +81,31 @@ class Introduction extends Component {
             autoplay
             >
                     <div>
-                        <img src={require('./images/introduction-slider-1.jpg')}
+                        <img src={require('../../images/introduction-slider-1.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('./images/introduction-slider-2.jpg')}
+                        <img src={require('../../images/introduction-slider-2.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('./images/introduction-slider-3.jpg')}
+                        <img src={require('../../images/introduction-slider-3.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('./images/introduction-slider-4.jpg')}
+                        <img src={require('../../images/introduction-slider-4.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('./images/introduction-slider-5.jpg')}
+                        <img src={require('../../images/introduction-slider-5.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('./images/introduction-slider-6.jpg')}
+                        <img src={require('../../images/introduction-slider-6.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
                     <div>
-                        <img src={require('./images/introduction-slider-7.jpg')}
+                        <img src={require('../../images/introduction-slider-7.jpg')}
                             alt='' className='picture-introduction' />
                     </div>
             </Carousel>

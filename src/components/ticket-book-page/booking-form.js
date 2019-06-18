@@ -49,7 +49,7 @@ class BookForm extends Component {
             })
         })
         .catch(error => {
-            console.log("GET thất bại", error);
+             console.log("GET thất bại", error);
         })
 
         axios.post(`http://localhost:4000/ticket/promotion`,{
@@ -99,21 +99,16 @@ class BookForm extends Component {
 
     handleChange = (event) => {
         const {name, value} = event.target 
-        console.log('khi thay đổi', name, [name], value)
+        // console.log('khi thay đổi', name, [name], value)
         this.setState({
             [name]: value 
         })
     }
 
-    handleSelect = (value) => {
-        
-        console.log('filter:', this.props.form.getFieldValue('ticketField'));
-        
-    }
 
     handlePromotionChange = (value) => {
         let selected = `${value}`
-        console.log('khuyến mãi tên', selected);
+        // console.log('khuyến mãi tên', selected);
         this.handlePromotionContent(selected)
         this.setState ({ 
             selectedPromotionID: selected
@@ -153,7 +148,7 @@ class BookForm extends Component {
             return parseInt(filteredTicketNumber) + parseInt(value)
         });
         
-        console.log('tại đây state tickettype là: ', this.state.ticketType);
+        // console.log('tại đây state tickettype là: ', this.state.ticketType);
         if (filteredTicketNumber != null && filteredTicketType != null) // chỉ enable cho ng dùng
         // chọn mục promotion khi họ đã chọn cả tên vé và số lượng vé
         {
@@ -162,7 +157,7 @@ class BookForm extends Component {
             })
         }
 
-        console.log('mảng ticketnumber  :',filteredTicketNumber, 'mảng vé tương ứng:', filteredTicketType);
+        // console.log('mảng ticketnumber  :',filteredTicketNumber, 'mảng vé tương ứng:', filteredTicketType);
         var selectedTickets = filteredTicketType.map((data)=>{
             return this.state.ticketArray.find((x, index)=> data === index)
         })
@@ -174,9 +169,9 @@ class BookForm extends Component {
             totalTicket: ticketsSum
         })
         .then (totalSum => {
-            // console.log('Tiền vé gốc lúc này: ',totalSum.data.OriginalPrice);
-            // console.log('Tiền vé đã giảm: ',totalSum.data.PostPromoPrice);
-            // console.log('được khuyến mãi chưa ? ', totalSum.data.promoFlag);
+            // // console.log('Tiền vé gốc lúc này: ',totalSum.data.OriginalPrice);
+            // // console.log('Tiền vé đã giảm: ',totalSum.data.PostPromoPrice);
+            // // console.log('được khuyến mãi chưa ? ', totalSum.data.promoFlag);
             this.setState({
                 ticketOriginalPrice: totalSum.data.OriginalPrice,
                 ticketPriceSum: totalSum.data.PostPromoPrice,
@@ -184,7 +179,7 @@ class BookForm extends Component {
                 promoAmount: totalSum.data.promoLimit
             })
         }).catch(err => {
-            console.log('Có lỗi: ',err);
+            // console.log('Có lỗi: ',err);
         })
     }
     }
@@ -213,7 +208,7 @@ class BookForm extends Component {
                         params: this.state,
                         selectedTickets,
                     }).catch(err => {
-                        console.log(err);
+                        // console.log(err);
                     })
                 })
                //ticketDate, customerName, phoneInput, ticketNumber, ticketType, ticketPriceSum
@@ -228,13 +223,13 @@ class BookForm extends Component {
                     emailPromo: this.state.selectedPromotionContent,
                     emailPromoApply: this.state.isPromoApplied,
                 }).then(res => {
-                    console.log('Email đã được gửi');
+                    // console.log('Email đã được gửi');
                     this.bookSuccess();
                 }).then(() => {
                     this.props.form.resetFields();
                     window.scrollTo(0,0);
                 }).catch(err => {
-                    console.log(err);
+                    // console.log(err);
                 })
             }
         })
@@ -284,7 +279,6 @@ class BookForm extends Component {
                         style={{ width: 400 }}
                         name="ticketType"
                         placeholder="- Hãy chọn loại vé -"
-                        onChange={this.handleSelect}
                         onBlur = {this.handlePrice}>
                         {
                             this.state.isLoading ? <Spin indicator = {loadingIcon} /> : 

@@ -78,7 +78,6 @@ class Content extends Component {
                         </Row>
                     </div>
                     <Divider dashed />
-                    <p>WE ARE IN THE END GAME NOW</p>
                 </Typography>}
             </div>
         )

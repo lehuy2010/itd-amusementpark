@@ -113,14 +113,15 @@ router.post('/submit', async (req,res) => {
         TicketType: req.body.selectedTickets,
         TotalSum:req.body.params.ticketPriceSum,
         OriginalSum: req.body.params.ticketOriginalPrice,
-        PromoID: req.body.params.selectedPromotionID
+        PromoID: req.body.params.selectedPromotionID,
+        isPromoApply: req.body.params.isPromoApplied
     }
     var TicketCodeArray = [];
-    console.log('tại api submit, ticketType của nó là : ', info.TicketType[1].Price);
+    
     var DetailTransactionsOrdinal = 0; // Số Ordinal cho bảng DetailTransaction
     console.log('mảng chứa tiền tổng cộng của các hạng mục vé - số lượng:', info.TotalSum, info.Phone);
     await ticketRepo.transactionInsert(info.OriginalSum,info.TotalSum,info.Phone)   //insert vào bảng Transactions
-    
+    var transactionResult = '';
     for (let i = 0; i < info.Amount.length; i++ )
     {
         for ( let j = 0; j < parseInt(info.Amount[i]); j++ )
@@ -130,7 +131,7 @@ router.post('/submit', async (req,res) => {
                 
                 DetailTransactionsOrdinal = await DetailTransactionsOrdinal + 1;
 
-                const transactionResult = await ticketRepo.getTransactionID()
+                transactionResult = await ticketRepo.getTransactionID()
                 var TransIDNumber = transactionResult[0].TransactionID
                 
                 var TicketIDNumber = ticketsResult[0].TicketID
@@ -140,7 +141,7 @@ router.post('/submit', async (req,res) => {
 
                 const tempArray = await ticketRepo.detailTransactionInsert(TransIDNumber, TicketIDNumber, TicketPrice,
                 DetailTransactionsOrdinal, info.TicketType[i].TicketName, info)
-                await ticketRepo.insertApplyPromo(transactionResult[0].TransactionID,info.PromoID);
+                
                 TicketCodeArray.push(tempArray);
                
             } catch(err) {
@@ -150,30 +151,32 @@ router.post('/submit', async (req,res) => {
             }
         }
     }
+    if (info.PromoID !== 0 && info.isPromoApply !== false){
+        console.log('đã có đủ 2 thứ chưa :',transactionResult[0].TransactionID,info.PromoID)
+        ticketRepo.insertApplyPromo(transactionResult[0].TransactionID,info.PromoID);
+    }
     res.json(TicketCodeArray);
         
 })
 
 router.post('/send', async (req,res) => {
     const information = req.body;
-    console.log('tại hàm gửi mail, information là: ', information)
+    //console.log('tại hàm gửi mail, information là: ', information)
     
-    var isPromoApply = '';
-    information.emailPromoApply === true ? 
-    isPromoApply = 'bạn đã đủ điều kiện cho chương trình khuyến mãi'
-    : isPromoApply = 'bạn đã đủ điều kiện cho chương trình khuyến mãi'
-
-    var isDiscount = 'đã giảm giá';
+    var isPromoApply = information.emailPromoApply === true ? 
+    'bạn đã đủ điều kiện cho chương trình khuyến mãi'
+    : 'bạn chưa đủ điều kiện cho chương trình khuyến mãi'
 
     const nextDay = moment(information.emailDate).add(1,'days').format('DD-MM-YYYY');
     var ticketPriceArr = [];
-    console.log("ticket number là ", information.emailTicketNumber);
+    //console.log("ticket number là ", information.emailTicketNumber);
     var returnPrice;
 
     for(let i = 0; i < information.emailTicketNumber.length; i++){
         var returnPrice = await ticketRepo.findPrice(information.emailTicketType[i].TicketName)
         ticketPriceArr.push(returnPrice[0].Price);
     }
+    
     const transactionResult = await ticketRepo.getTransactionID()
     var TransIDNumber = transactionResult[0].TransactionID
 
@@ -204,11 +207,16 @@ router.post('/send', async (req,res) => {
                 Số điện thoại đặt mua: <b>${information.emailPhone}</b> <br/>
                 Ngày mua vé : <b>${moment(information.emailDate).format('DD-MM-YYYY')}</b> <br/>
                 Ngày hết hạn: <b>${nextDay}</b> <br/>
-                Thông tin các vé đã mua: <br/>
+                Thông tin các vé đã mua: <br/><br/>
                 ${information.emailTicketNumber.map(function(data, index) {
-                    return (`<p><b> ${data} vé ${information.emailTicketType[index].TicketName} : ${ticketPriceArr[index].toLocaleString('vi-vn')} đồng </b></p> `)})}
-                Chương trình khuyến mãi: <b>${information.emailPromo}</b><br/>
-               (${isPromoApply}) <br />
+                     return (`<b> ${data} vé ${information.emailTicketType[index].TicketName} : ${ticketPriceArr[index].toLocaleString('vi-vn')} đồng </b><br/><br/>`)})}
+                Chương trình khuyến mãi: <b>${information.emailPromo === null ? 'không có' : information.emailPromo}</b><br/>
+               ${information.emailPromoApply === true && information.emailPromo !== null ?
+                     (`(bạn đã đủ điều kiện cho chương trình khuyến mãi)<br />`)
+                :information.emailPromoApply === false && information.emailPromo !== null ?
+                    (`(bạn chưa đủ điều kiện cho chương trình khuyến mãi)<br />`)
+                :
+                (`(không có chương trình khuyến mãi)<br />`)}
                 Tổng cộng: <b>${information.emailTotal.toLocaleString('vi-vn')} đồng ${isPromoApply === true ? 'đã giảm giá' : ''}</b> <br />
                 Cảm ơn bạn đã sử dụng dịch vụ của iTD. Chúc bạn có những buổi vui chơi vui vẻ.
         </div>

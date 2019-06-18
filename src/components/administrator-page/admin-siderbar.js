@@ -29,7 +29,7 @@ class AdminSider extends Component  {
                     mode="inline"
                     >
                         <Menu.Item key="personalInformation">
-                            <Link to = "/user" >
+                            <Link to = "user" >
                             <Icon type="user" />
                             <span>Thông tin cá nhân</span>
                             </Link>
@@ -45,21 +45,23 @@ class AdminSider extends Component  {
                             }
                         >
                             <Menu.Item key="homepage">
-                            <Link to = "/home-modify">Trang chủ</Link>
+                            <Link to = "home-modify">Trang chủ</Link>
                             </Menu.Item>
 
                             <Menu.Item key="introduction">
-                            <Link to = "/introduction-modify"></Link>
+                            <Link to = "introduction-modify"></Link>
                             Giới thiệu</Menu.Item>
 
 
                             <Menu.Item key="contact">
-                            <Link to = "/contact-modify"></Link>
+                            <Link to = "contact-modify"></Link>
                             Liên hệ</Menu.Item>
 
                             <Menu.Item key="ticket-price">
-                            <Link to = "/ticket-modify"></Link>
+                            <Link to = "ticket-modify"></Link>
                             Giá vé</Menu.Item>
+
+                            
 
                         </SubMenu>
 
@@ -73,7 +75,7 @@ class AdminSider extends Component  {
                             }
                         >
                             <Menu.Item key="addGame">
-                            <Link to = "/add-game"></Link>
+                            <Link to = "add-game"></Link>
                                 Thêm trò chơi
                             </Menu.Item>
                             

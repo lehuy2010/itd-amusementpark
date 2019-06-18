@@ -19,7 +19,9 @@ router.post('/game', (req,res) => {
         console.log(rows)
     }).catch(err => {
         console.log(err);
-        res.statusCode = 500;
+        res.status(404).json({
+            error: 'Không tồn tại'
+        })
     })
 })
 module.exports = router;

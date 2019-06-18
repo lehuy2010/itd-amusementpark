@@ -29,29 +29,32 @@ class App extends Component {
         <PageHeader />
         <div className='push'> </div>
         <Switch>
-            <Route exact path="/book" component={BookForm} />
+            
             <Route exact path="/" component={Homepage} />
-            <Route exact path="/login" component = {AdminLoginForm} />
             <Route exact path="/introduction" component={Introduction} />
             <Route exact path="/games" component={GamesServices} />
             <Route exact path="/contact" component={Contact} />
             <Route exact path="/about-us" component={AboutUs} />
             <Route exact path="/prices" component={PriceTable} />
             <Route exact path="/games/:id" component={GameDetails} />
-
-            <AdminLayout>
-              <Switch>
-                <Route exact path = "/user" component = {UserInformation} />
-                <Route exact path = "/home-modify" component = {HomepageModify} />
-                <Route exact path = "/introduction-modify" component = {IntroductionModify} />
-                <Route exact path = "/contact-modify" component = {ContactModify} />
-                <Route exact path = "/ticket-modify" component = {TicketModify} />
-                <Route exact path = "/add-game" component = {AddGame} />
-                <Route component = {NotFound} /> 
-              </Switch>
+            <Route exact path="/book" component={BookForm} />
+            <Route exact path="/login" component = {AdminLoginForm} />
+            
+           
+            
+            <AdminLayout path='/admin'>
+              <Route exact path = "/admin/user" component = {UserInformation} />
+              <Route exact path = "/admin/home-modify" component = {HomepageModify} />
+              <Route exact path = "/admin/introduction-modify" component = {IntroductionModify} />
+              <Route exact path = "/admin/contact-modify" component = {ContactModify} />
+              <Route exact path = "/admin/ticket-modify" component = {TicketModify} />
+              <Route exact path = "/admin/add-game" component = {AddGame} />
+              <Route component = {NotFound} />
             </AdminLayout>
-
-            <Route component = {NotFound} /> 
+              
+            <Route component = {NotFound} />
+          
+            
         </Switch>
         
         <PageFooter />

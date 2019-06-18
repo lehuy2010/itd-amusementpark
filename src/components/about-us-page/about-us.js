@@ -19,7 +19,7 @@ class AboutUs extends Component {
         firebaseInfo.on('value', (snapshot) => { 
             this.setState({
                 personalInfo: snapshot.val(),
-                 isLoading: false
+                isLoading: false
             })
         })
     }

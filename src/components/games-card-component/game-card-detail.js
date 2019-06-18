@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { Typography } from 'antd'
 import ImageDisplay from './image-component';
-// import { Redirect } from 'react-router-dom'
 import LoadingIcon from '../loading-icon/LoadingIcon'
+import NotFound from '../error-page/notfound'
 const { Title } = Typography
 class GameDetails extends Component {
     constructor (props) {
@@ -12,7 +12,8 @@ class GameDetails extends Component {
             gameName: '',
             gameImage: '',
             gameDesc: '',
-            isLoading: true
+            isLoading: true,
+            isError: false
         }
     }
     componentDidMount () {
@@ -24,15 +25,18 @@ class GameDetails extends Component {
                 gameName: res.data[0].TicketTypeName,
                 gameImage: res.data[0].ImageURL,
                 gameDesc: res.data[0].Description,
-                isLoading: false
+                isLoading: false,
+            
             })
         }).catch(err => {
             console.log(err);
+            this.setState({isError: true})
         })
     }
     render() {
     document.title = this.state.gameName
     return (
+        this.state.isError === true ? <NotFound /> : 
         <div style={{ margin: '200px',textAlign: 'center' }}>
             <Title style={{ color: '#389e0d', marginTop: 10 }}>
                 {this.state.gameName}

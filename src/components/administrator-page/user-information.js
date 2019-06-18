@@ -118,7 +118,7 @@ class UserInformation extends Component {
         const user = this.state.isLoading ? <LoadingIcon /> : 
         Object.keys(this.state.userInfo).map((key, index) => {
             return (
-                key !== 'Password' ? 
+                key !== 'Password' && key !== 'IsUsed' ? 
                     key === 'EmployeeID' || key === 'ModifyDate'  ? 
                      <Input
                         name = {key}

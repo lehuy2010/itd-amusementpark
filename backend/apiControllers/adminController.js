@@ -56,35 +56,45 @@ router.post('/addgame', async (req,res) => {
 })
 
 router.post('/login', (req, res) => {
-    adminRepo.getAdminInfo(req.body).then(user => { 
-        if (typeof (user[0].Gender) === 'boolean') {
-            if (user[0].Gender === true)
-                user[0].Gender = 'Nam'
-            else
-                user[0].Gender = 'Nữ'
-        }
+    adminRepo.getAdminInfo(req.body).then(user => {
         bcrypt.compare(req.body.password, user[0].Password, function (err, result) {
-            if (result) {
-                var token = authRepo.generateAccessToken(user);
-                res.json({
-                    
-                    token: token
-                })
-            }
-            else {
-                res.status(401).json({
-                    error: 'Sai tên đăng nhập hoặc mật khẩu'
-                })
-            }
+                if (result) {
+                    adminRepo.verifyAdminID(user[0].EmployeeID).then(auth => {
+                        for (let i = 0; i < auth.length; i++) {
+                            if (auth[i].RoleID === 1) {
+                                if (typeof (user[0].Gender) === 'boolean') {
+                                    if (user[0].Gender === true)
+                                        user[0].Gender = 'Nam'
+                                    else
+                                        user[0].Gender = 'Nữ'
+                                }
+                                var token = authRepo.generateAccessToken(user);
+                                return res.status(200).json({
+                                    token: token
+                                })
+                            }
+                        }
+                        return res.status(401).json({
+                                    error: 'Không có phân quyền'
+                                })
+                    })   
+                }
+                else {
+                    return res.status(401).json({
+                        error: 'Sai tên đăng nhập hoặc mật khẩu'
+                    })
+                }   
         })
-        }).catch(err => {
-            console.log(err);
-            res.status(500)
-                .json({
-                    error: 'Sai tên đăng nhập hoặc mật khẩu'
-                })
+        
+    }).catch(err => {
+        console.log(err);
+        res.status(500)
+            .json({
+                error: 'Sai tên đăng nhập hoặc mật khẩu'
+            })
         })
     })
+
 
 
 router.post('/authenticate', authRepo.verifyToken, (req,res) => { 

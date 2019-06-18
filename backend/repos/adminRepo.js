@@ -3,10 +3,13 @@ var moment = require('moment')
 
 exports.getAdminInfo = entity => { 
     var newHash = `select EmployeeID, Password, EmployeeName, Gender, Birthday, Phone, Address,
-    ModifyDate from Employee where Account = '${entity.username}'`;
+    ModifyDate, IsUsed from Employee where Account = '${entity.username}'`;
     return db.load(newHash)
 }
-
+exports.verifyAdminID = id => { 
+    var sql = `select RoleID from EmployeeRole where EmployeeID = '${id}'`
+    return db.load(sql);
+}
 exports.saveEmployeeInfo = (entity) => { 
     var currentTime = moment().format("YYYY-MM-DD HH:mm:ss:SS")
     var sql = `update Employee set EmployeeName = N'${entity.EmployeeName}', Birthday =  '${entity.Birthday}',
