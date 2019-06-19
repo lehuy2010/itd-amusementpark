@@ -1,0 +1,84 @@
+{
+    "introductioncontent": {
+      "introduction_title_1": "GIỚI THIỆU SƠ LƯỢC",
+      "introduction_subtitle_1": "Công ty Cổ Phần Du lịch Văn hóa Suối Tiên phôi thai là một Lâm trại nuôi trăn và sản xuất hàng thủ công mỹ nghệ do ông Đinh Văn Vui - một người con quê hương Sóc Trăng bắt đầu xây dựng vào năm 1987. Lâm trại lúc đầu chỉ có 6.600 m² đất hoang hóa, có con suối chảy qua với huyền thoại 7 cô gái đồng trinh cùng tuổi Rồng quy tiên tại dòng suối nên dân trong vùng gọi là Suối Tiên.",
+      "introduction_title_2": "LỊCH SỬ HÌNH THÀNH VÀ PHÁT TRIỂN"
+    },
+    "homecontent" : {
+        "homepage_game_title" : "Các hoạt động giải trí",
+        "homepage_subtitle" : "Là nơi sẽ mang đến cho bạn và người thân, gia đình,bạn bè vô vàn niềm vui và kỉ niệm đáng nhớ",
+        "homepage_title_1" : "KHU VUI CHƠI GIẢI TRÍ iTD",
+        "homepage_title_2" : "Khu vui chơi giải trí đa dạng bậc nhất Việt Nam"
+      },
+    "contactcontent" : {
+        "company_name" : "iTD Amusement Park",
+        "physical_address" : "01 Sáng Tạo, Khu chế xuất Tân Thuận, phường Tân Thuận Tây, quận 7 Thành phố Hồ Chí Minh",
+        "phone_mail" : "034.799.1447 / nguyenlehuy1101@gmail.com"
+    },
+    "ticketcontent" : { 
+        "apply_date" : "Thời gian áp dụng giá vé của bảng dưới đây: từ ngày 17/05/2019",
+        "purchase_location" : "Địa điểm mua vé: 01 Sáng Tạo, KCX Tân Thuận, Quận 7 Thành phố Hồ Chí Minh",
+        "rules" : {
+            "adult" : "Vé người lớn dành cho khách hàng có chiều cao > 1,4 mét ",
+            "children": "Vé trẻ em dành cho khách hàng có chiều cao từ 1 đến 1,4 mét",
+            "note": "Các bé dưới 1m sẽ được miễn phí vé vào cổng khi đi kèm với phụ huynh mua vé người lớn "
+        },
+        "attention_info" : "Quí khách mua vé online KHÔNG cần mua vé cho các bé dưới 1m. Khi đến quầy để lấy vé chỉ cần dẫn bé đi kèm"
+    },
+    "aboutuscontent": [
+        {
+            "id": 1,
+            "information": {
+                "name": "Nguyễn Lê Huy",
+                "coverPhoto": "huy-avatar.jpg",
+                "email": "nguyenlehuy1101@gmail.com",
+                "description": "thêm sau ajwgnotgijoaowrfnjgteusheirlgjtuoilzngrjserglkeangkjbxflknghesrzgdilbkns"
+            }
+        },
+        {
+            "id": 2,
+            "information": {
+                "name": "Võ Sơn Hiệp",
+                "coverPhoto": "hiep-avatar.jpg",
+                "email": "vosonhiepa@gmail.com",
+                "description": "thêm sau ajwgnotgijoaowrfnjgteusheirlgjtuoilzngrjserglkeangkjbxflknghesrzgdilbkns"
+            }
+        },
+        {
+            "id": 3,
+            "information": {
+                "name": "Trịnh Thiên Yến Nhi",
+                "coverPhoto": "nhi-avatar.jpg",
+                "email": "trinhthienyennhi@gmail.com",
+                "description": "thêm sau ajwgnotgijoaowrfnjgteusheirlgjtuoilzngrjserglkeangkjbxflknghesrzgdilbkns"
+            }
+        },
+        {
+            "id": 4,
+            "information": {
+                "name": "Nguyễn Văn Tú",
+                "coverPhoto": "tu-avatar.jpg",
+                "email": "ngvantu2912@gmail.com",
+                "description": "thêm sau ajwgnotgijoaowrfnjgteusheirlgjtuoilzngrjserglkeangkjbxflknghesrzgdilbkns"
+            }
+        }
+    ],
+    "socialmedia": [
+        {
+            "link": "https://www.facebook.com/lehuy2010",
+            "type": "facebook"
+        },
+        {
+            "link": "https://www.instagram.com/nguyenlehuy1101/",
+            "type": "instagram"
+        },
+        {
+            "link": "https://www.youtube.com/channel/UCIH-pVX7WBpXp0I0NkwVCCg",
+            "type": "youtube"
+        },
+        {
+            "link": "https://twitter.com/nguyenlehuy1101",
+            "type": "twitter"
+        }
+    ]
+}
