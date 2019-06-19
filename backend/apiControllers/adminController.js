@@ -13,7 +13,7 @@ var storage = multer.diskStorage({
         cb(null, '../../ticket-temp/src/images')
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname)
+        cb(null, file.originalname)
     }
 })
 const upload = multer({storage});
@@ -43,16 +43,6 @@ router.post('/addgame', async (req,res) => {
     res.json({
         message: 'thêm game thành công'
     })
-    // .then(result => { 
-    //     temp = adminRepo.getTicketID();
-    //     latestID = temp[0].TicketTypeID
-    //     console.log('sau khi insert trò mới vào, id mới là ', latestID);
-        
-    // }).then(res => { 
-    //     console.log('insert 3 dòng thành công', res)
-    // }).catch(err => { 
-    //     console.log('lỗi', err)
-    // })
 })
 
 router.post('/login', (req, res) => {

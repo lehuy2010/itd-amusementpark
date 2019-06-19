@@ -43,6 +43,7 @@ class App extends Component {
            
             
             <AdminLayout path='/admin'>
+            <Switch>
               <Route exact path = "/admin/user" component = {UserInformation} />
               <Route exact path = "/admin/home-modify" component = {HomepageModify} />
               <Route exact path = "/admin/introduction-modify" component = {IntroductionModify} />
@@ -50,6 +51,7 @@ class App extends Component {
               <Route exact path = "/admin/ticket-modify" component = {TicketModify} />
               <Route exact path = "/admin/add-game" component = {AddGame} />
               <Route component = {NotFound} />
+              </Switch>
             </AdminLayout>
               
             <Route component = {NotFound} />

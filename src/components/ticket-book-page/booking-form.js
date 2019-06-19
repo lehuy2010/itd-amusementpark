@@ -7,7 +7,6 @@ import {
 } from 'antd';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
-import { number } from 'prop-types';
 const loadingIcon = <Icon type="loading" style={{ fontSize: 48, marginLeft: '4px' }} spin />;
 /*eslint-disable */
 const { Option } = Select;

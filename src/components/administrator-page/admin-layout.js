@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Layout } from 'antd';
 import AdminSider from './admin-siderbar';
-import { withRouter, Route } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 const { Content } = Layout;
 class AdminLayout extends Component {
     constructor(props) {

@@ -18,6 +18,9 @@ class PriceTable extends Component {
         document.title = 'Giá vé'
         axios.get(`http://localhost:4000/ticket/prices`)
         .then(response => {
+            response.data = response.data.filter(content => {
+                return content.adultUsed === true || content.childUsed === true;
+            })
             response.data.forEach(content => {
                 if (content.childUsed === false) {
                     content.childGia = 'Không áp dụng';
@@ -25,6 +28,7 @@ class PriceTable extends Component {
                 if (content.adultUsed === false) {
                     content.adultGia = 'Không áp dụng';
                 }
+                
                 content.adultGia = content.adultGia.toLocaleString('vi-vn')
                 content.childGia = content.childGia.toLocaleString('vi-vn')
             })
@@ -82,7 +86,7 @@ class PriceTable extends Component {
             footer = {() => '*Vé đã mua không thể hoàn trả'}
             expandedRowRender = {record => <p style = {{margin: 0, fontWeight: 'bold', fontSize: '18px', color: 'red'}} >
                 {record.motaVe}
-                </p>}   
+                </p>}
             /> }
              <div style = {{textAlign: 'right', marginTop: '40px'}}> 
                     <Button

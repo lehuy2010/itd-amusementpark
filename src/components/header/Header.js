@@ -44,7 +44,7 @@ class PageHeader extends Component {
                         </Menu.Item>
 
                         <Menu.Item key="keyAbout" >
-                            <Link to =  "/about-us" > About Us </Link> 
+                            <Link to =  "/about-us" > Về chúng tôi </Link> 
                         </Menu.Item>
                         <Menu.Item    
                             style = {{position: 'absolute', top: '0', right: '0'}}    //luôn nằm ở góc phải trên                    
